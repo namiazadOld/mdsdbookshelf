@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+      
+        <display-name>BookShelf</display-name>
+        
+        <description>BookShelf</description>
+      
+                   
+        <welcome-file-list>
+            <welcome-file>root</welcome-file>
+        </welcome-file-list>
+        
+        <servlet>
+          <servlet-name>mainservlet</servlet-name>
+          <servlet-class>utils.DispatchServlet</servlet-class>
+        </servlet> 	
+        <servlet>
+          <servlet-name>jcaptcha</servlet-name>
+          <servlet-class>utils.ImageCaptchaServlet</servlet-class>
+          <load-on-startup>0</load-on-startup>
+        </servlet>
+        <servlet-mapping>
+          <servlet-name>jcaptcha</servlet-name>
+          <url-pattern>/jcaptcha</url-pattern>
+        </servlet-mapping>
+        <servlet-mapping>
+          <servlet-name>mainservlet</servlet-name>
+          <url-pattern>/pagenotfound/*</url-pattern>
+        </servlet-mapping>	
+        
+         
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/signup/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/root/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/manageColor/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/editColor/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/color/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/createColor/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/managePerson/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/editPerson/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/person/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/createPerson/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/pagenotfound/*</url-pattern>
+            </servlet-mapping>	
+            
+         
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/errorTemplateInputListString/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/sidebar/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/applicationmenu/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/mainheader/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/body/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/main/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/templateSuccessListString/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/errorTemplateActionListString/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/errorTemplateFormListString/*</url-pattern>
+            </servlet-mapping>	
+             
+            <servlet-mapping>
+              <servlet-name>mainservlet</servlet-name>
+              <url-pattern>/validatedInput/*</url-pattern>
+            </servlet-mapping>	
+            
+        <error-page>
+          <error-code>404</error-code>
+          <location>/pagenotfound</location>
+        </error-page>
+        
+        <session-config>
+          <session-timeout>120</session-timeout>
+        </session-config>
+      </web-app>
