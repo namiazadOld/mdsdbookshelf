@@ -6,7 +6,7 @@
 
 
 if(!dojo._hasResource["dojox.string.BidiComplex"]){
-dojo._hasResource["dojox.string.BidiComplex"]=true;
+dojo._hasResource["dojox.string.BidiComplex"]=true; 
 dojo.provide("dojox.string.BidiComplex");
 dojo.experimental("dojox.string.BidiComplex");
 (function(){
