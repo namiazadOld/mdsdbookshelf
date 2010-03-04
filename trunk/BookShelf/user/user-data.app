@@ -1,3 +1,4 @@
+KOS
 module user/user-data
 
 enum Gender {maleGender("Male"), femaleGender("Female")}
