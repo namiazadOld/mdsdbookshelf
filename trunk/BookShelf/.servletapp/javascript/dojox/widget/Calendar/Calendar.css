@@ -1,7 +1,7 @@
 .dojoxCalendar {
 	width: 182px;
 }
-.dojoxCalendarContainer {
+.dojoxCalendarContainer { 
 	cursor: default;
 	font-family: tahoma, verdana, helvetica;
 	font-size: 11px;
