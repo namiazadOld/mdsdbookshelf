@@ -6,7 +6,7 @@
 
 
 if(!dojo._hasResource["dojox.widget.AnalogGauge"]){
-dojo._hasResource["dojox.widget.AnalogGauge"]=true;
+dojo._hasResource["dojox.widget.AnalogGauge"]=true; 
 dojo.provide("dojox.widget.AnalogGauge");
 dojo.require("dojox.gfx");
 dojo.require("dojox.widget.gauge._Gauge");
