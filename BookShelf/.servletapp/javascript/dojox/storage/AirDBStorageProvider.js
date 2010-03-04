@@ -5,7 +5,7 @@
 */
 
 
-if(!dojo._hasResource["dojox.storage.AirDBStorageProvider"]){
+if(!dojo._hasResource["dojox.storage.AirDBStorageProvider"]){ 
 dojo._hasResource["dojox.storage.AirDBStorageProvider"]=true;
 dojo.provide("dojox.storage.AirDBStorageProvider");
 dojo.require("dojox.storage.manager");
