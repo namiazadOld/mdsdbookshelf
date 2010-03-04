@@ -2,9 +2,6 @@ module user/user-data
 
 enum Gender {maleGender("Male"), femaleGender("Female")}
 
-entity CustomString {
-	name :: String (name)
-}
 
 entity User {
     username  :: String (id)
@@ -15,9 +12,10 @@ entity User {
     birthdate :: Date
     isactive  :: Bool
     email     :: Email
-    phoneno   -> Set<CustomString>
-    mobileno  -> Set<CustomString>
-    address   -> Set<CustomString>  
+    phoneno   :: String
+    mobileno  :: String
+    address1   :: String  
+    address2   :: String  
     function signup() {
       this.password := this.password.digest();
       this.isactive := true;
@@ -47,10 +45,13 @@ define page signup() {
           par{ label("Gender: "){ input(user.gender) } }
           par{ label("Birthday: "){ input(user.birthdate) } }
           par{ label("Email: "){ input(user.email) } }
-          par{ label("Phone Numbers: "){ input(user.phoneno) } }
-          par{ label("Mobile Numbers: "){ input(user.mobileno) } }
+          
+          par{ label("Address Street1: "){ input(user.address1) } }
+          par{ label("Address Street2: "){ input(user.address2) } }
+          par{ label("Phone Number: "){ input(user.phoneno) } }
+          par{ label("Mobile Number: "){ input(user.mobileno) } }
           par{ label("Please enter the text below: "){ captcha() } }
-          action("Sign Up", action{ user.signup(); return root(); })
+          action("Sign Up", action{ user.signup(); return root(); }) 
         }
       }
     }
