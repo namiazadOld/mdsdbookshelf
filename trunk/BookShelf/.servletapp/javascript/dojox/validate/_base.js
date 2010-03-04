@@ -5,7 +5,7 @@
 */
 
 
-if(!dojo._hasResource["dojox.validate._base"]){
+if(!dojo._hasResource["dojox.validate._base"]){ 
 dojo._hasResource["dojox.validate._base"]=true;
 dojo.provide("dojox.validate._base");
 dojo.experimental("dojox.validate");
