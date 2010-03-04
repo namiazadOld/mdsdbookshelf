@@ -5,7 +5,7 @@
 */
 
 
-if(!dojo._hasResource["dojox.timing._base"]){
+if(!dojo._hasResource["dojox.timing._base"]){ 
 dojo._hasResource["dojox.timing._base"]=true;
 dojo.provide("dojox.timing._base");
 dojo.experimental("dojox.timing");
