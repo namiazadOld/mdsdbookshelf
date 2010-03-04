@@ -5,7 +5,7 @@
 */
 
 
-if(!dojo._hasResource["dojox.uuid._base"]){
+if(!dojo._hasResource["dojox.uuid._base"]){ 
 dojo._hasResource["dojox.uuid._base"]=true;
 dojo.provide("dojox.uuid._base");
 dojox.uuid.NIL_UUID="00000000-0000-0000-0000-000000000000";
