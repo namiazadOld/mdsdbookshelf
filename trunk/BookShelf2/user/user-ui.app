@@ -5,8 +5,8 @@ imports user/user-data
 access control rules
   rule page login() { true } 
   rule page signup()   { true }
-  rule page signin()   { true }
-
+  rule ajaxtemplate signin()   { true }
+  
 section login
 
  define page login(){
@@ -33,6 +33,26 @@ section login
 //    forgotPassword()
     header{"Register"}
     par{ "No account? " navigate(signup()){ "Register now" } }
+  }
+  
+  
+  define signoutLink(){
+  	actionLink("Signout", action{ signout(); })
+  }
+  
+  define signinLink() {
+//    action showForm() { replace(content, signin()); }
+//    form{ actionLink("Sign in", showForm())[ajax] }
+    navigate(login()){"Login"}
+  }
+  
+  
+  define signinoff() {
+    if(securityContext.principal != null) { 
+       signoutLink() 
+    } else { 
+      signinLink()
+    }
   }
  
 define page signup() {

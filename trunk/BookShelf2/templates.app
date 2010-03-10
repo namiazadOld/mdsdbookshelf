@@ -3,6 +3,10 @@ module templates
 imports user/user-ui
 imports user/user-data
 
+access control rules
+	rule action signout() { isAdministrator() }
+
+
 section main template
 
 define main() {
@@ -36,7 +40,7 @@ define main() {
 
 		 </div>
 		 <div id="footer">
-		       		
+		       		footer()
 			   <p />"powered by " <a href="http://webdsl.org">"WebDSL"</a><p />		
 			    
 	     </div>   </div>
@@ -47,6 +51,9 @@ define body(){
   "default body"
 }
 
+define footer(){
+	signinoff()
+}
 define mainheader() {
   navigate(root()){
     image("/images/logo.jpg")
@@ -62,9 +69,10 @@ define applicationmenu() {
  // </ul>
  
    <ul>
-    <li>navigate(root()){"home"}</li>
+    <li>navigate(root()){"Home"}</li>
     <li>navigate(managePerson()){ "Manage Person" }</li>
-    <li>navigate(signup()){ "singup" }</li>
+    <li>navigate(signup()){ "Singup" }</li>
+    
   </ul>
 }
  

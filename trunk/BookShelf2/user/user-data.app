@@ -21,7 +21,12 @@ entity User {
       this.isactive := true;
       this.save();
       log("Sign Up Log: " + this);
-      //email(confirmEmail(this));
+      if( administratorsGroup.members.length == 0 ){
+      	administratorsGroup.members.add(this);
+      }else {
+      	customerGroup.members.add(this);
+      }
+	     //email(confirmEmail(this));
       //message("You should receive an email to verify your registration.");
       message("Your registration has been done successfully.");
     }
@@ -30,7 +35,8 @@ entity User {
 access control rules
   principal is User with credentials username, password
   rule template *(*) { true }	
- 
+    
+  
  section authentication
 
   function principal() : User { 
@@ -50,7 +56,7 @@ access control rules
     return true; 
   }  
   
-  function signoff() {
+  function signout() {
     securityContext.principal := null;
   }
   
