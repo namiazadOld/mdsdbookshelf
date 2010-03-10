@@ -1,20 +1,41 @@
 module templates
 
 define main() {
-  <div id="pagewrapper">
-     <div id="header">
-        mainheader()
-     </div>
-     <div id="navbar">
-       applicationmenu()
-     </div>
-     <div id="content">
-       body()
-     </div>
-     <div id="footer">
-       <p />"powered by " <a href="http://webdsl.org">"WebDSL"</a><p />
-     </div>
-  </div>
+	includeCSS("layout.css")
+	<div id="wrapper">
+         <div id="header">
+		 
+		       mainheader()		 
+			   
+		 </div>
+		 
+         	<div id="navigation">
+		 
+		      <div id="tabs">
+		      	applicationmenu()
+		      </div>
+		</div>
+		             
+		 <div id="leftcolumn">
+			<div class="arrowgreen">
+				applicationmenu()
+			</div>
+		 
+		 </div>
+		 <div id="content">
+		      
+			  body() 
+		 
+		 </div>
+		 <div id="rightcolumn">
+
+		 </div>
+		 <div id="footer">
+		       		
+			   <p />"powered by " <a href="http://webdsl.org">"WebDSL"</a><p />		
+			    
+	     </div>   </div>
+	     
 }
 
 define body(){
@@ -23,13 +44,19 @@ define body(){
 
 define mainheader() {
   navigate(root()){
-    image("/images/logosmall.png")
+    image("/images/logo.png")
   }
 }
 
 define applicationmenu() {
-  <ul>
-    <li>navigate(root()){"Home"}</li>
+  //<ul>
+//    <li>navigate(root()){"Home"}</li>
+ //   <li>navigate(managePerson()){ "Manage Person" }</li>
+ // </ul>
+ 
+   <ul>
+    <li>output("salam")</li>
+    <li>navigate(root()){"home"}</li>
     <li>navigate(managePerson()){ "Manage Person" }</li>
   </ul>
 }
