@@ -11,6 +11,7 @@ imports user/user-ui
 access control rules
  
   rule page root() { true }
+  rule page createPerson() {isAdministrator()}
   
 section pages
 
