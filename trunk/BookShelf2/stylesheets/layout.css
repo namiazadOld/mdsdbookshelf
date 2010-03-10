@@ -1,0 +1,170 @@
+/*
+      Created by CSS Portal Layout Generator
+	  
+	  http://www.cssportal.com
+	  	  
+*/
+
+* { padding: 0; margin: 0; }
+
+body {
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ font-size: 13px;
+}
+
+p {
+ padding: 10px;
+}
+
+#wrapper { 
+ margin: 0 auto;
+ width: 800px;
+}
+
+#content { 
+ float: left;
+ color: #333;
+ background: #FFFFFF;
+ height: 350px;
+ width: 600px;
+ display: inline;
+}
+
+#header {
+ color: #333;
+ width: 800px;
+ float: left;
+ height: 118px;
+ background: #6B6659;
+}
+
+#footer { 
+ width: 800px;
+ height: 25px;
+ clear: both;
+ color: #333;
+ background: #6B6659;
+}
+
+#navigation {
+ float: left;
+ width: 800px;
+ height: 50px;
+ color: #333;
+}
+
+#leftcolumn { 
+ color: #333;
+ height: 350px;
+ width: 150px;
+ float: left;
+}
+
+#rightcolumn { 
+ color: #333;
+ background: #8AA1B6;
+ height: 350px;
+ width: 50px;
+ float: left;
+}
+
+
+/*Credits: Dynamic Drive CSS Library */
+/*URL: http://www.dynamicdrive.com/style/ */
+
+#tabs {
+	float:left;
+	width:100%;
+	font-size:93%;
+	line-height:normal;
+	border-bottom:1px solid #666;
+	margin-bottom:1em; /*margin between menu and rest of page*/
+	overflow:hidden;
+	}
+
+#tabs ul {
+	margin:0;
+	padding:10px 10px 0 0px;
+	list-style:none;
+	
+	}
+
+#tabs li {
+	display:inline;
+	margin:0;
+	padding:0;
+	}
+
+#tabs a span {
+	float:left;
+	background:url("../images/left.png") no-repeat left top;
+	margin:0;
+	padding:0 0 0 6px;
+	text-decoration:none;
+	}
+/*
+#tabs a span {	
+*/
+#tabs a {
+	float:left;
+	display:block;
+	background:url("../images/right.png") no-repeat right top;
+	padding:6px 15px 4px 6px;
+	margin-right:4px;
+	color:#FFF;
+	}
+
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#tabs a span {float:none;}
+
+/* End IE5-Mac hack */
+#tabs a:hover span {
+	}
+
+#tabs a:hover {
+	background-position:100% -42px;
+	}
+
+#tabs a:hover span {
+	background-position:100% -42px;
+	}
+
+.arrowgreen{
+	width: 180px; /*width of menu*/
+	border-style: solid solid none solid;
+	border-color: #94AA74;
+	border-size: 1px;
+	border-width: 1px;
+}
+
+.arrowgreen ul{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+	
+.arrowgreen li a{
+	font: bold 12px Verdana, Arial, Helvetica, sans-serif;
+	display: block;
+	background: transparent url(../images/arrowblue.gif) 100% 0;
+  height: 24px; /*Set to height of bg image- padding within link (ie: 32px - 4px - 4px)*/
+	padding: 4px 0 4px 10px;
+	line-height: 24px; /*Set line-height of bg image- padding within link (ie: 32px - 4px - 4px)*/
+	text-decoration: none;
+}	
+	
+.arrowgreen li a:link, .arrowgreen li a:visited {
+	color: #5E7830;
+}
+
+.arrowgreen li a:hover{
+	color: #26370A;
+	background-position: 100% -32px;
+}
+
+	
+.arrowgreen li a.selected{
+	color: #26370A;
+	background-position: 100% -64px;
+}
+	
