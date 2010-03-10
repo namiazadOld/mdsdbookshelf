@@ -5,6 +5,13 @@ description {
 }
 
 imports templates
+imports user/user-data
+imports user/user-ui
+
+access control rules
+ 
+  rule page root() { true }
+  
 section pages
 
 define page root() {

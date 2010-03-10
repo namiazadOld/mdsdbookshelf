@@ -1,5 +1,10 @@
 module templates
 
+imports user/user-ui
+imports user/user-data
+
+section main template
+
 define main() {
 	includeCSS("layout.css")
 	<div id="wrapper">
@@ -44,9 +49,11 @@ define body(){
 
 define mainheader() {
   navigate(root()){
-    image("/images/logo.png")
+    image("/images/logo.jpg")
   }
 }
+
+
 
 define applicationmenu() {
   //<ul>
@@ -55,9 +62,9 @@ define applicationmenu() {
  // </ul>
  
    <ul>
-    <li>output("salam")</li>
     <li>navigate(root()){"home"}</li>
     <li>navigate(managePerson()){ "Manage Person" }</li>
+    <li>navigate(signup()){ "singup" }</li>
   </ul>
 }
  
