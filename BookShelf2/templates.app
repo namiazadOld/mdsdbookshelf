@@ -3,8 +3,8 @@ module templates
 imports user/user-ui
 imports user/user-data
 imports user/admin-ui
-imports product/book/book-data
 imports product/book/book-ui
+imports product/book/genre-ui
 
 access control rules
 	rule action signout() { isAdministrator() }
@@ -85,6 +85,8 @@ define leftsidemenu(){
    <ul>
     <li>navigate(usermgmt()){ "User Management" }</li>
     <li>navigate(createbook()){ "Define New Book" }</li>
+    <li>navigate(creategenre()){ "Define New Genre" }</li>
+    genreMenu()
   </ul>
 }
  

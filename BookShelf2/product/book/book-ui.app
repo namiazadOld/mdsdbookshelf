@@ -1,6 +1,7 @@
 module product/book/book-ui
 
 imports user/user-data
+imports product/book/book-data
 
 access control rules
   rule page createbook() { isAdministrator() } 

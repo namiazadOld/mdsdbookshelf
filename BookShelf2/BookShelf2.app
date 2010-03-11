@@ -8,8 +8,8 @@ imports user/user-data
 imports templates
 imports user/user-data
 imports user/user-ui
-imports product/book/book-data
 imports product/book/book-ui
+imports product/book/genre-ui
 
 access control rules
  
