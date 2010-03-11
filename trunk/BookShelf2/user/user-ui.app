@@ -1,7 +1,7 @@
 module user/user-ui
 
 imports user/user-data
-imports user/test-data
+//imports user/test-data
 
 access control rules
   rule page login() { true } 
@@ -61,7 +61,7 @@ section login
   
   
   define signoutLink(){
-  	actionLink("Signout", action{ signout(); })
+  	actionLink("Signout", action{ signout(); goto root(); })
   }
   
   define signinLink() {
@@ -88,20 +88,20 @@ define page signup() {
       section{
         header{"Sign Up"}
         form{ 
-          par{ label("Username: "){ input(user.username) } }
-          par{ label("Password: "){ input(user.password) } }
-          par{ label("Confirm password: "){ input(password) {
+          par{ label("Username"){ input(user.username) } }
+          par{ label("Password"){ input(user.password) } }
+          par{ label("Confirm password"){ input(password) {
                 validate(password == user.password, "Passwords do not match!") } } }
-          par{ label("First Name: "){ input(user.firstname) } }
-          par{ label("Last Name: "){ input(user.lastname) } }
-          par{ label("Gender: "){ input(user.gender) } }
-          par{ label("Birthday: "){ input(user.birthdate) } }
-          par{ label("Email: "){ input(user.email) } }
+          par{ label("First Name"){ input(user.firstname) } }
+          par{ label("Last Name"){ input(user.lastname) } }
+          par{ label("Gender"){ input(user.gender) } }
+          par{ label("Birthday"){ input(user.birthdate) } }
+          par{ label("Email"){ input(user.email) } }
           
-          par{ label("Address Street1: "){ input(user.address1) } }
-          par{ label("Address Street2: "){ input(user.address2) } }
-          par{ label("Phone Number: "){ input(user.phoneno) } }
-          par{ label("Mobile Number: "){ input(user.mobileno) } }
+          par{ label("Address Street1"){ input(user.address1) } }
+          par{ label("Address Street2"){ input(user.address2) } }
+          par{ label("Phone Number"){ input(user.phoneno) } }
+          par{ label("Mobile Number"){ input(user.mobileno) } }
 //          par{ label("Please enter the text below: "){ captcha() } }
           action("Sign Up", action{ user.signup(); return root(); }) 
         }
