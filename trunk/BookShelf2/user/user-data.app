@@ -4,7 +4,7 @@ enum Gender {maleGender("Male"), femaleGender("Female")}
 
 
 entity User {
-    username  :: String (id)
+    username  :: String (id, validate(isUniqueUser(this), "User already exist."))
     password  :: Secret
     firstname :: String 
     lastname  :: String
