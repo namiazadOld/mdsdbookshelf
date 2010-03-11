@@ -4,3 +4,6 @@ entity OrderItem{
 	count	::	Int
 	
 }
+
+entity Order{
+}
