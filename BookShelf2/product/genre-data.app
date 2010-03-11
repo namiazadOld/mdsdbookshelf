@@ -1,0 +1,4 @@
+module product
+
+entity Genre{
+}
