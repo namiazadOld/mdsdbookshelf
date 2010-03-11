@@ -2,6 +2,7 @@ module templates
 
 imports user/user-ui
 imports user/user-data
+imports user/admin-ui
 
 access control rules
 	rule action signout() { isAdministrator() }
@@ -72,7 +73,14 @@ define applicationmenu() {
     <li>navigate(root()){"Home"}</li>
     <li>navigate(managePerson()){ "Manage Person" }</li>
     <li>navigate(signup()){ "Singup" }</li>
-    
+    <li>navigate(mypage()){ "My Page" }</li>
+    <li>navigate(usermgmt()){ "User Management" }</li>
+  </ul>
+}
+
+define leftsidemenu(){
+   <ul>
+    <li>navigate(usermgmt()){ "User Management" }</li>
   </ul>
 }
  
