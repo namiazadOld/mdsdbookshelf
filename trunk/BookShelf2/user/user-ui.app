@@ -4,8 +4,31 @@ imports user/user-data
 
 access control rules
   rule page login() { true } 
-  rule page signup()   { true }
+  rule page signup()   { !isCustomer() && !isShipper() && !isAdministrator() }
+  rule page mypage()   { isCustomer() }
+  rule page profile(user: User) { isAdministrator() || isCustomer() || isShipper()}
   rule ajaxtemplate signin()   { true }
+  
+section changing password
+  
+  define changePassword(user : User) {
+    var password1 : Secret
+    var password2 : Secret
+    action change() {
+      validate(password1 == password2, "Passwords do not match.");
+      user.changePassword(password1);
+      user.save();
+      message("Your password has been changed.");
+    }
+    section{
+      header{"Change Password"}
+      form{
+        par{ label("Password: "       ){ input(password1) } }
+        par{ label("Repeat password: "){ input(password2) { validate(password1 == password2, "Passwords do not match.") } } }
+        action("Change password", change())
+      }
+    }
+  }
   
 section login
 
@@ -84,3 +107,44 @@ define page signup() {
       }
     }
   }
+  
+section account management
+
+  define page mypage() {
+    init{ if(!loggedIn()) { goto root(); } }
+    
+    main()
+    define body(){
+      account(securityContext.principal)
+    }
+  }
+ 
+  define page profile(user: User){
+	init{ if(!loggedIn()) { goto root(); } }
+	main
+	define body(){
+		accountData(user)
+	}
+  }
+
+  define account(user : User) {
+    section{
+      header{"Your Account"}
+      accountData(user)
+      changePassword(user)
+//      changeEmailAddress(user)
+    }
+  }
+  
+  define accountData(user : User) {
+    section{
+      header{"Account Data"}
+      group{
+        groupitem{ label("Your username is:      "){ output(user.username) } }
+        groupitem{ label("Your first name:             "){ output(user.firstname) } }
+        groupitem{ label("Your last name:             "){ output(user.lastname) } }
+        groupitem{ label("Your email address is: "){ output(user.email)    } }
+      }
+    }
+  }
+  
