@@ -1,17 +1,12 @@
-module book/book-data
-
-function validateIsbn(isbn13: String) : Bool
-{
-	
-}
+module product/book/book-data
 
 entity Book{
 
-	isbn13 :: String (id, validate(/\d{3}-\d{1}-\d{6}-\d{2}-\d{1}/.match(isbn), "BookShelf only supports isbn13"))
+	title :: String (name, validate(title.length() != 0, "Name is mandatory field"))
+	isbn13 :: String (id, validate(/\d{3}-\d{1}-\d{6}-\d{2}-\d{1}/.match(isbn13), "BookShelf only supports isbn13"))
 	frontImage :: Image
 	backImage :: Image
 	tableOfContent :: WikiText
-	name :: String (name, validate(name.length() != 0, "Name is mandatory field"))
 	publisher :: String
 	publicationDate :: Date
 	edition :: String
@@ -21,9 +16,8 @@ entity Book{
 	description :: String
 	
 	function create(){
-		if (isAdministrator()){
-			this.save();
-			log("" + this);
-		}	
+		this.save();
+		log("Book Creation Log: " + this);
+		message("Book has been created successfully.");
 	}
 }
