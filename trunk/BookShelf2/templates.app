@@ -3,6 +3,8 @@ module templates
 imports user/user-ui
 imports user/user-data
 imports user/admin-ui
+imports product/book/book-data
+imports product/book/book-ui
 
 access control rules
 	rule action signout() { isAdministrator() }
@@ -28,7 +30,7 @@ define main() {
 		             
 		 <div id="leftcolumn">
 			<div class="arrowgreen">
-				applicationmenu()
+				leftsidemenu()
 			</div>
 		 
 		 </div>
@@ -82,6 +84,7 @@ define applicationmenu() {
 define leftsidemenu(){
    <ul>
     <li>navigate(usermgmt()){ "User Management" }</li>
+    <li>navigate(createbook()){ "Define New Book" }</li>
   </ul>
 }
  

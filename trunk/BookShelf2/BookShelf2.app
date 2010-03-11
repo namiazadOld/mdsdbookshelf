@@ -4,9 +4,12 @@ description {
   A simple app that uses CRUD page generation for managing a Person entity
 }
 
+imports user/user-data
 imports templates
 imports user/user-data
 imports user/user-ui
+imports product/book/book-data
+imports product/book/book-ui
 
 access control rules
  
