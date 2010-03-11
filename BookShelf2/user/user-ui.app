@@ -1,6 +1,7 @@
 module user/user-ui
 
 imports user/user-data
+imports user/test-data
 
 access control rules
   rule page login() { true } 
@@ -101,7 +102,7 @@ define page signup() {
           par{ label("Address Street2: "){ input(user.address2) } }
           par{ label("Phone Number: "){ input(user.phoneno) } }
           par{ label("Mobile Number: "){ input(user.mobileno) } }
-          par{ label("Please enter the text below: "){ captcha() } }
+//          par{ label("Please enter the text below: "){ captcha() } }
           action("Sign Up", action{ user.signup(); return root(); }) 
         }
       }

@@ -76,6 +76,7 @@ define applicationmenu() {
     <li>navigate(mypage()){ "My Page" }</li>
     <li>navigate(usermgmt()){ "User Management" }</li>
   </ul>
+  
 }
 
 define leftsidemenu(){
