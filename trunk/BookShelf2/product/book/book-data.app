@@ -19,4 +19,11 @@ entity Book{
 	eBookAvailableCount :: Int
 	discount :: Float
 	description :: String
+	
+	function create(){
+		if (isAdministrator()){
+			this.save();
+			log("" + this);
+		}	
+	}
 }
