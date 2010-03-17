@@ -5,7 +5,7 @@ imports product/book/book-data
 
 access control rules
   rule page createbook() { isAdministrator() } 
-  rule page bookList( genre: Genre) {true}
+  rule page bookList( genre: Genre) {!isAdministrator()}
 section book management
 
 define page createbook(){
