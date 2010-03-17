@@ -4,7 +4,7 @@ imports user/user-data
 imports product/book/author-data
 
 access control rules
-  rule page createAuthor() { isAdministrator() } 
+  rule page createauthor() { isAdministrator() } 
 
 section author management
 
@@ -16,19 +16,15 @@ define page createauthor(){
 		section{
 			header { "Define New Author" }
 			form{
-				par{ label("Title "){ input(book.title) } }
-				par{ label("ISBN "){ input(book.isbn13) } }
-				par{ label("Front Image "){ input(book.frontImage) } }
-				par{ label("Back Image "){ input(book.backImage) } }
-				par{ label("Table of Content "){ input(book.tableOfContent) } }
-				par{ label("Publication Date "){ input(book.publicationDate) } }
-				par{ label("Edition "){ input(book.edition) } }
-				par{ label("Hard Copy Available Count "){ input(book.hardCopyAvailableCount) } }
-				par{ label("EBook Coppy Available Count "){ input(book.eBookAvailableCount) } }
-				par{ label("Discount "){ input(book.discount) } }
-				par{ label("Description "){ input(book.description) } }
-				par{ label("Genre "){ input(book.genre) } }
-				action("Create", action{ book.create(); return createbook(); }) 
+				par{ label("First name "){ input(author.firstName) } }
+				par{ label("Last name "){ input(author.lastName) } }
+				par{ label("Email "){ input(author.email) } }
+				par{ label("Gender "){ input(author.gender) } }
+				par{ label("Image "){ input(author.image) } }
+				par{ label("Death Date "){ input(author.deathDate) } }
+				par{ label("Nationality "){ input(author.nationality) } }
+				par{ label("Description "){ input(author.description) } }
+				action("Create", action{ author.create(); return createauthor(); }) 
 			}
 		}
 	}
