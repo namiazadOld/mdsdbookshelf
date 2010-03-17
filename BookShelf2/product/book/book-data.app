@@ -15,6 +15,7 @@ entity Book{
 	discount :: Float
 	description :: String
 	genre 	-> Genre
+	authorList -> Set<Author> 
 	function create(){
 		this.save();
 		this.frontImage.resize(200,128);

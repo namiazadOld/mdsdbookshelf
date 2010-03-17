@@ -7,7 +7,7 @@ entity Author{
 	firstName :: String
 	lastName :: String
 	email :: Email
-	name :: String := firstname + lastname
+	name :: String := firstName + lastName
 	gender    -> Gender
 	image :: Image
 	deathDate :: Date
