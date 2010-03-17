@@ -5,7 +5,7 @@ imports product/book/book-data
 
 access control rules
   rule page createbook() { isAdministrator() } 
-
+  rule page bookList( genre: Genre) {true}
 section book management
 
 define page createbook(){
@@ -27,8 +27,29 @@ define page createbook(){
 				par{ label("EBook Coppy Available Count "){ input(book.eBookAvailableCount) } }
 				par{ label("Discount "){ input(book.discount) } }
 				par{ label("Description "){ input(book.description) } }
+				par{ label("Genre "){ input(book.genre) } }
 				action("Create", action{ book.create(); return createbook(); }) 
 			}
 		}
 	}
   }
+ 
+   define bookDetail(book : Book){
+  	<div id="bookDetail">
+  		par{	output(book.frontImage)	}
+  		par{	output(book.title)	}
+  	</div>
+  } 
+  define page bookList(genre : Genre){
+  		main()
+	define body(){
+		for(book :Book in genre.bookList) {
+			bookDetail(book) 
+			
+		}
+	
+	}
+  }
+  
+
+  
