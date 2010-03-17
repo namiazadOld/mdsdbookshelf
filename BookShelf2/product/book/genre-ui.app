@@ -5,7 +5,6 @@ imports product/book/genre-data
 
 access control rules
   rule page creategenre() { isAdministrator() } 
-  rule page genreProfile(genre: Genre) { !isAdministrator() } 
 
 section genre management
 
