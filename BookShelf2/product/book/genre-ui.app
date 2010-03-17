@@ -39,6 +39,6 @@ define page creategenre(){
   
   define genreMenu(){
   		for (genre: Genre){
-  			<li>navigate(genreProfile(genre)){ output(genre.title) }</li>
+  			<li>navigate(bookList(genre)){ output(genre.title) }</li>
   		}
   }

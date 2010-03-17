@@ -73,7 +73,6 @@ define applicationmenu() {
  
    <ul>
     <li>navigate(root()){"Home"}</li>
-    <li>navigate(managePerson()){ "Manage Person" }</li>
     <li>navigate(signup()){ "Singup" }</li>
     <li>navigate(mypage()){ "My Page" }</li>
     <li>navigate(usermgmt()){ "User Management" }</li>
