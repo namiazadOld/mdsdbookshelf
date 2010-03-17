@@ -1,4 +1,4 @@
-module product/order
+module product/order/order-data
 
 imports product/book/book-data
 
@@ -14,10 +14,11 @@ entity Order{
 	orderItems	-> Set<OrderItem>
 	date		:: Date	
 	status		-> OrderStatus
-	customer	:: User (validate(isCustomer(), "The user should be a customer"))
+//	customer	:: User (validate(isCustomer(), "The user should be a customer"))
 	
 	function createOrder() {
 		this.save();
 	}
 }
+
 

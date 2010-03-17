@@ -1,12 +1,12 @@
 module product/order-ui
 
-imports product/order-data
+imports product/order/order-data
 
 
 section	order management
 
 define page newOrder(){
-	header("Order Items")
+//	header("Order Items")
 	
 }
 
