@@ -2,6 +2,10 @@ module product/book/author-data
 
 imports user/user-data
 
+function searchAuthor(author : Author) :  List<Author>{
+    return null;
+  }  
+
 entity Author{
 
 	firstName :: String
@@ -13,6 +17,7 @@ entity Author{
 	deathDate :: Date
 	nationality :: String
 	description :: String	
+	bookList -> Set<Book>
 	function create(){
 		this.save();
 		this.image.resize(200,128);

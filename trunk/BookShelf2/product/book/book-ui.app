@@ -2,21 +2,46 @@ module product/book/book-ui
 
 imports user/user-data
 imports product/book/book-data
+imports product/book/author-data
+imports product/book/author-ui
 
 access control rules
   rule page createbook() { isAdministrator() } 
   rule page bookList( genre: Genre) {!isAdministrator()}
 section book management
 
+
+
 define page createbook(){
 	init{ if(!loggedIn()) { goto root(); } }
 	var book:= Book{}
+	var authorName : String
 	main
 	define body(){
+	placeholder testph{ "no details shown" }
+		
 		section{
 			header { "Define New Book" }
 			form{
 				par{ label("Title "){ input(book.title) } }
+				
+				<div id="authorInfo">
+				table{
+     					row{
+      						column{ label("Author ") {input(authorName)}}
+      						column{
+      							action("show details",show())[ajax]
+      							action show(){
+    								replace(testph,searchAuthorAjax());
+  							}			
+						      }
+						column {
+							//action("Create", action{ book.create();})
+							}
+     					} 
+   				}
+   				</div>
+				
 				par{ label("ISBN "){ input(book.isbn13) } }
 				par{ label("Front Image "){ input(book.frontImage) } }
 				par{ label("Back Image "){ input(book.backImage) } }
@@ -29,6 +54,7 @@ define page createbook(){
 				par{ label("Description "){ input(book.description) } }
 				par{ label("Genre "){ input(book.genre) } }
 				action("Create", action{ book.create(); return createbook(); }) 
+				
 			}
 		}
 	}

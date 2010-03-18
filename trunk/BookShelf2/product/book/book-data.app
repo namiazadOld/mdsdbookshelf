@@ -15,7 +15,8 @@ entity Book{
 	discount :: Float
 	description :: String
 	genre 	-> Genre
-	authorList -> Set<Author> 
+	//authorList -> Set<Author> (inverse = Author.bookList)
+	author -> Author (inverse = Author.bookList)
 	function create(){
 		this.save();
 		this.frontImage.resize(200,128);
