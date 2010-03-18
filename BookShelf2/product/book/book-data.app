@@ -1,5 +1,7 @@
 module product/book/book-data
 
+imports product/book/utils-data
+
 entity Book{
 
 	title :: String (name, validate(title.length() != 0, "Name is mandatory field"))
@@ -15,13 +17,21 @@ entity Book{
 	discount :: Float
 	description :: String
 	genre 	-> Genre
-	//authorList -> Set<Author> (inverse = Author.bookList)
-	author -> Author (inverse = Author.bookList)
+	authorList -> Set<Author> (inverse = Author.bookList)
+	unresolvedAuthorList -> List<CustomString>
+	
 	function create(){
 		this.save();
-		this.frontImage.resize(200,128);
-		this.backImage.resize(200,128);		
+		if (this.frontImage != null)
+		{
+			this.frontImage.resize(200,128);
+		}
+		if (this.backImage != null)
+		{
+			this.backImage.resize(200,128);	
+		}	
 		log("Book Creation Log: " + this);
 		message("Book has been created successfully.");
 	}
 }
+
