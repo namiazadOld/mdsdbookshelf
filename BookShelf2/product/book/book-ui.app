@@ -4,6 +4,7 @@ imports user/user-data
 imports product/book/book-data
 imports product/book/author-data
 imports product/book/author-ui
+imports product/order/order-ui
 
 access control rules
   rule page createbook() { isAdministrator() } 
@@ -62,8 +63,20 @@ define page createbook(){
  
    define bookDetail(book : Book){
   	<div id="bookDetail">
-  		par{	output(book.frontImage)	}
-  		par{	output(book.title)	}
+  		table{
+  			row{
+  				column{	output(book.frontImage)	}
+  				column{ 
+					  				
+	  				header{output(book.title)}	
+	  				par[class :="className" ]{	output("Somthing else" +book.title)	}
+	  				par{	output("Publisher" + book.publisher )}
+  				}
+  				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
+  			}	
+  		}
+  		
+  		
   	</div>
   } 
   define page bookList(genre : Genre){
