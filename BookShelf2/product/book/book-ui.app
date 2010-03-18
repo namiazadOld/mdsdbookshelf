@@ -18,6 +18,8 @@ define page createbook(){
 	init{ if(!loggedIn()) { goto root(); } }
 	var book:= Book{}
 	var authors : String
+	var cs := CustomString {};
+	var parts : List<String>;
 	main
 	define body(){	
 		section{
@@ -38,12 +40,12 @@ define page createbook(){
 				par{ label("Genre "){ input(book.genre) } }
 				action("Create", action{ 
 					book.create();
-					var parts := authors.split(",");
+					parts := authors.split(",");
 					book.unresolvedAuthorList := List<CustomString>();
 					
 					for (p: String in parts)
 					{
-						var cs := CustomString {};
+						cs := CustomString {};
 						cs.content := p;
 						book.unresolvedAuthorList.add(cs);
 					}
@@ -57,6 +59,39 @@ define page createbook(){
   }
  
    define bookDetail(book : Book){
+        var authorString : String
+        var count := 0
+   	init {
+ 		if (book.unresolvedAuthorList != null)
+ 		{
+ 			for (author: CustomString in book.unresolvedAuthorList)
+ 			{
+ 				authorString := authorString + author.content;
+ 				count := count + 1;
+ 				
+ 				if (count < book.numberOfAuthors())
+ 				{
+ 					authorString := authorString + ", ";
+ 				}
+ 			}
+ 			
+ 		}  
+ 		
+ 		if (book.authorList != null)
+ 		{
+ 			for (author: Author in book.authorList)
+ 			{
+ 				authorString := authorString + author;
+ 				count := count + 1;
+ 				
+ 				if (count < book.numberOfAuthors())
+ 				{
+ 					authorString := authorString + ", ";
+ 				}
+ 			}
+ 			
+ 		}  		
+   	}
   	<div id="bookDetail">
   		table{
   			row{
@@ -64,8 +99,9 @@ define page createbook(){
   				column{ 
 					  				
 	  				header{output(book.title)}	
-	  				par[class :="className" ]{	output("Somthing else" +book.title)	}
+	  				par[class :="className" ]{	output(book.title)	}
 	  				par{	output("Publisher" + book.publisher )}
+	  				par{ output ("By: " + authorString)}
   				}
   				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
   			}	

@@ -33,5 +33,22 @@ entity Book{
 		log("Book Creation Log: " + this);
 		message("Book has been created successfully.");
 	}
+	
+	function numberOfAuthors() : Int
+	{
+		var count := 0;
+		
+		if (this.unresolvedAuthorList != null)
+		{
+			count := count + this.unresolvedAuthorList.length;
+		}
+			
+		if (this.authorList != null)
+		{
+			count := count + this.authorList.length;
+		}
+		
+		return count;
+	}
 }
 
