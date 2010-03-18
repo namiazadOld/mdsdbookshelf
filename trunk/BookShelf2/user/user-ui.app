@@ -34,7 +34,7 @@ section changing password
 section login
 
  define page login(){
-	init{ if(loggedIn()) { goto root(); } }
+	init{ if(loggedIn()) { return root(); } }
 	 
 	main()
 	define body(){
@@ -42,8 +42,8 @@ section login
 	}
  } 
 
-  define ajax signin() {
-    init{ if(loggedIn()) { goto root(); } }
+  define signin() {
+    init{ if(loggedIn()) { return root(); } }
     var username : String
     var password : Secret
     action doit(){ signin(username, password); }
@@ -51,7 +51,7 @@ section login
     form{
       par{ label("Username"){ input(username) } }
       par{ label("Password"){ input(password) } }
-      par{ action("Sign in", doit())[id:=submit,ajax] }
+      par{ action("Sign in", doit())[id:=submit] }
     }
     header{"Register"}
     par{ "No account? " navigate(signup()){ "Register now" } }
@@ -59,7 +59,7 @@ section login
   
   
   define signoutLink(){
-  	actionLink("Signout", action{ signout(); goto root(); })
+  	actionLink("Signout", action{ signout(); return root(); })
   }
   
   define signinLink() {
@@ -110,7 +110,7 @@ define page signup() {
 section account management
 
   define page mypage() {
-    init{ if(!loggedIn()) { goto root(); } }
+    init{ if(!loggedIn()) { return root(); } }
     
     main()
     define body(){
@@ -119,7 +119,7 @@ section account management
   }
  
   define page profile(user: User){
-	init{ if(!loggedIn()) { goto root(); } }
+	init{ if(!loggedIn()) { return root(); } }
 	main
 	define body(){
 		accountData(user)
