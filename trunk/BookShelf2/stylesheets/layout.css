@@ -32,8 +32,23 @@ padding:3px;
 	border: solid 1px #85b1de; 
 	width: 600px;
 	background-color: #EDF2F7;
-}
 
+}
+#authorInfo table td{
+	vertical-align:bottom;
+}
+#authorInfo input[type="text"]{
+
+		width: 500px;
+		
+	}
+
+#authorInfo input[type="submit"]{
+
+		margin-bottom: 5px;
+		padding: 2px;
+		
+	}
 
 form {
   display : inline;
