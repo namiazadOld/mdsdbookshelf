@@ -181,6 +181,23 @@ p {
 	background-position:100% -42px;
 	}
 
+#bookDetail{
+font-family: arial,helvetica,sans-serif; font-size: 12px;
+background-color:#d9e1ea;
+color:#007000;
+font-family:"bogus font here",monospace;
+font-size:100%;
+margin-bottom:1em;
+overflow:auto;
+width: 100;
+padding: 1px;
+}
+
+#bookDetail p{
+padding: 5px;
+}
+
+
 .arrowgreen{
 	width: 148px; /*width of menu*/
 	border-style: solid solid none solid;
