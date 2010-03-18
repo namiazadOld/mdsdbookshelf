@@ -51,10 +51,8 @@ section login
     form{
       par{ label("Username"){ input(username) } }
       par{ label("Password"){ input(password) } }
-      //par{ validate(checkPassword(username, password), "That combination of username and password is not correct.") }
       par{ action("Sign in", doit())[id:=submit,ajax] }
     }
-//    forgotPassword()
     header{"Register"}
     par{ "No account? " navigate(signup()){ "Register now" } }
   }
