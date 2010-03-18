@@ -121,6 +121,15 @@ p {
  float: left;
 }
 
+#rightcolumn label{ 
+ margin-top:0em;
+}
+
+#rightcolumn input[type="text"]{
+	
+		width: 130px;
+	}
+
 /*Credits: Dynamic Drive CSS Library */
 /*URL: http://www.dynamicdrive.com/style/ */
 
