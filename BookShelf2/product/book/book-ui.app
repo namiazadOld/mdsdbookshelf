@@ -5,6 +5,7 @@ imports product/book/book-data
 imports product/book/author-data
 imports product/book/author-ui
 imports product/book/utils-data
+imports product/book/book-ui
 
 access control rules
   rule page createbook() { isAdministrator() } 
