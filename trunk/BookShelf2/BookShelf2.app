@@ -21,7 +21,7 @@ section pages
 define page root() {
   main()
   define body() {
-    "Hello world nasir!"
+    "Welcome to BookShelf!"
   }
 }
 
