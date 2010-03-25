@@ -32,6 +32,7 @@ define page createbook(){
 				par{ label("Front Image "){ input(book.frontImage) } }
 				par{ label("Back Image "){ input(book.backImage) } }
 				par{ label("Table of Content "){ input(book.tableOfContent) } }
+				par{ label("Publisher "){ input(book.publisher) } }
 				par{ label("Publication Date "){ input(book.publicationDate) } }
 				par{ label("Edition "){ input(book.edition) } }
 				par{ label("Hard Copy Available Count "){ input(book.hardCopyAvailableCount) } }
@@ -132,21 +133,13 @@ define page createbook(){
   }
   
   define page searchResult(searchString : String){
-  	var books : List<Book>
-  	init
-  	{
-  	        books := searchBook(searchString);
-  		//books := from Book as b where b.title like ~searchString2;
-  	}
+  	var books : List<Book> := searchBook(searchString)
   	main()
 	define body(){
-		//for(book :Book in books) {
-		//	bookDetail(book) 
-		output (searchString)
-		output (books.length)
-		output("fsfs")
-			
-		//}
+		for(book :Book in books) {
+			bookDetail(book) 
+			//output(book.authors)
+		}
 	}
   	
   }
