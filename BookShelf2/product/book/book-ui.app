@@ -9,7 +9,8 @@ imports product/order/order-ui
 
 access control rules
   rule page createbook() { isAdministrator() } 
-  rule page bookList( genre: Genre) {!isAdministrator()}
+  rule page bookList( genre: Genre) {true}
+  rule page searchResult (searchString : String) {true}
 section book management
 
 
@@ -130,10 +131,22 @@ define page createbook(){
 	}
   }
   
-  define page searchResult(query : String){
+  define page searchResult(searchString : String){
+  	var books : List<Book>
+  	init
+  	{
+  	        books := searchBook(searchString);
+  		//books := from Book as b where b.title like ~searchString2;
+  	}
   	main()
 	define body(){
-	
+		//for(book :Book in books) {
+		//	bookDetail(book) 
+		output (searchString)
+		output (books.length)
+		output("fsfs")
+			
+		//}
 	}
   	
   }
