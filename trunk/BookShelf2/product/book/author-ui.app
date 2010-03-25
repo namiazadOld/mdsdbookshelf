@@ -6,8 +6,13 @@ imports product/book/author-data
 access control rules
   rule page createauthor() { isAdministrator() } 
   rule ajaxtemplate searchAuthorAjax(){true}
+  rule page unresolvedauthorlist() {isAdministrator()}
 
 section author management
+
+define page unresolvedauthorlist(){
+	
+}
 
 define ajax searchAuthorAjax(){
   	var author:= Author{}

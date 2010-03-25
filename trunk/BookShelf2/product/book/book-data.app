@@ -1,6 +1,6 @@
-	module product/book/book-data
+module product/book/book-data
 
-imports product/book/utils-data
+
 
 entity Book{
 
@@ -18,7 +18,7 @@ entity Book{
 	description :: String (searchable)
 	genre 	-> Genre
 	authorList -> Set<Author> (inverse = Author.bookList)
-	unresolvedAuthorList -> List<CustomString>
+	unresolvedAuthorList -> List<UnresolvedAuthor>
 	
 	authors :: String (searchable) := allAuthorsString()
 	
@@ -27,9 +27,9 @@ entity Book{
 		
 		if (this.unresolvedAuthorList != null)
 		{
-			for (author: CustomString in this.unresolvedAuthorList)
+			for (author: UnresolvedAuthor in this.unresolvedAuthorList)
 			{
-				result := result + author.content + " ";
+				result := result + author.fullName + " ";
 			}
 		}
 			

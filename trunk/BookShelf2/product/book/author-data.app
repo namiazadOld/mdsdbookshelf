@@ -6,6 +6,10 @@ function searchAuthor(author : Author) :  List<Author>{
     return null;
   }  
 
+entity UnresolvedAuthor{
+	fullName :: String
+}
+
 entity Author{
 
 	firstName :: String
