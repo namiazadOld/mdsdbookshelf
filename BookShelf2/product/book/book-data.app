@@ -18,7 +18,7 @@ entity Book{
 	description :: String (searchable)
 	genre 	-> Genre
 	authorList -> Set<Author> (inverse = Author.bookList)
-	unresolvedAuthorList -> List<UnresolvedAuthor>
+	unresolvedAuthorList -> List<UnresolvedAuthor> (inverse = UnresolvedAuthor.book)
 	
 	authors :: String (searchable) := allAuthorsString()
 	

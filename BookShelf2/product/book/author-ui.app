@@ -11,7 +11,35 @@ access control rules
 section author management
 
 define page unresolvedauthorlist(){
-	
+        var boolSet := List<Bool>()
+	init{ if(!loggedIn()) { goto root(); } }
+	main
+	define body(){
+		section{
+			header { "Resolving Authors" }
+			form{
+				table
+				{
+				        
+					for(author : UnresolvedAuthor)
+					{
+						var boolInput : Bool;
+						row
+						{
+							column
+							{
+								input(boolInput)
+							}
+							column
+							{
+								output(author.fullName)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 define ajax searchAuthorAjax(){

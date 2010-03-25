@@ -8,6 +8,7 @@ function searchAuthor(author : Author) :  List<Author>{
 
 entity UnresolvedAuthor{
 	fullName :: String
+	book -> Book
 }
 
 entity Author{
