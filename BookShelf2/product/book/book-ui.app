@@ -99,18 +99,27 @@ define page createbook(){
   				column{ 
 					  				
 	  				header{output(book.title)}	
+
 	  				par[class :="className" ]{	output(book.title)	}
 	  				par{	output("Publisher" + book.publisher )}
 	  				par{ output ("By: " + authorString)}
   				}
-  				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
+//  				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
+  				column{ par{navigate(testPage(book)){image("/images/addcart.png")	}}}
   			}	
   		}
   		
   		
   	</div>
   } 
-  
+  define page testPage(book : Book ){
+  	main
+  	define body(){
+  			//orderView(ord)
+		output("salam")
+		output(book.title)
+  	}
+  }
   define page bookList(genre : Genre){
   		main()
 	define body(){
