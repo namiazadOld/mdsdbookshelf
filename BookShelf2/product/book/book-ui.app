@@ -127,8 +127,20 @@ define page createbook(){
 			bookDetail(book) 
 			
 		}
-	
 	}
+  }
+  
+  define page searchResult(query : String){
+  	main()
+	define body(){
+	
+		
+		for(book :Book in books) {
+			bookDetail(book) 
+			
+		}
+	}
+  	
   }
   
 
