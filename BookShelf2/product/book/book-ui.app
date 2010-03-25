@@ -4,12 +4,11 @@ imports user/user-data
 imports product/book/book-data
 imports product/book/author-data
 imports product/book/author-ui
-imports product/book/utils-data
 imports product/order/order-ui
 
 access control rules
   rule page createbook() { isAdministrator() } 
-  rule page bookList( genre: Genre) {true}
+  rule page bookList( genre: Genre) {!isAdministrator()}
   rule page searchResult (searchString : String) {true}
 section book management
 
@@ -19,7 +18,7 @@ define page createbook(){
 	init{ if(!loggedIn()) { goto root(); } }
 	var book:= Book{}
 	var authors : String
-	var cs := CustomString {};
+	var cs := UnresolvedAuthor {};
 	var parts : List<String>;
 	main
 	define body(){	
@@ -43,12 +42,12 @@ define page createbook(){
 				action("Create", action{ 
 					book.create();
 					parts := authors.split(",");
-					book.unresolvedAuthorList := List<CustomString>();
+					book.unresolvedAuthorList := List<UnresolvedAuthor>();
 					
 					for (p: String in parts)
 					{
-						cs := CustomString {};
-						cs.content := p;
+						cs := UnresolvedAuthor {};
+						cs.fullName := p;
 						book.unresolvedAuthorList.add(cs);
 					}
 					
@@ -59,6 +58,8 @@ define page createbook(){
 		}
 	}
   }
+  
+  
  
    define bookDetail(book : Book){
         var authorString : String
@@ -66,9 +67,9 @@ define page createbook(){
    	init {
  		if (book.unresolvedAuthorList != null)
  		{
- 			for (author: CustomString in book.unresolvedAuthorList)
+ 			for (author: UnresolvedAuthor in book.unresolvedAuthorList)
  			{
- 				authorString := authorString + author.content;
+ 				authorString := authorString + author.fullName;
  				count := count + 1;
  				
  				if (count < book.numberOfAuthors())
@@ -103,7 +104,7 @@ define page createbook(){
 	  				header{output(book.title)}	
 
 	  				par[class :="className" ]{	output(book.title)	}
-	  				par{	output("Publisher" + book.publisher )}
+	  				par{ output("Publisher: " + book.publisher )}
 	  				par{ output ("By: " + authorString)}
   				}
 //  				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
