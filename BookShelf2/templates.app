@@ -27,7 +27,8 @@ define main() {
 		      	applicationmenu()
 		      </div>
 		</div>
-		             
+		     
+		
 		 <div id="leftcolumn">
 			<div class="arrowgreen">
 				leftsidemenu()
@@ -40,7 +41,7 @@ define main() {
 		 
 		 </div>
 		 <div id="rightcolumn">
-
+		 	search()
 		 </div>
 		 <div id="footer">
 		       		footer()
@@ -63,6 +64,17 @@ define mainheader() {
   }
 }
 
+
+define search(){
+	
+	var inputSearch : String
+	
+	par{ label("Search: "){ input(inputSearch) } }
+	form{
+		action("Go!", action{ 
+		return searchResult(inputSearch); })
+	}
+}
 
 
 define applicationmenu() {
