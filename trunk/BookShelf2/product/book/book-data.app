@@ -1,10 +1,10 @@
-module product/book/book-data
+	module product/book/book-data
 
 imports product/book/utils-data
 
 entity Book{
 
-	title :: String (name, validate(title.length() != 0, "Name is mandatory field"))
+	title :: String (name, validate(title.length() != 0, "Name is mandatory field"), searchable)
 	isbn13 :: String (id, validate(/\d{3}-\d{1}-\d{6}-\d{2}-\d{1}/.match(isbn13), "BookShelf only supports isbn13"))
 	frontImage :: Image
 	backImage :: Image
