@@ -22,23 +22,45 @@ define page viewOrder(order : Order){
  
  section order item management
  
- define page newOrderItem(book: Book){
- 	var user: User :=  securityContext.principal
- 	var inprogressOrder : List<Order> := from Order as o where o.customer = ~user and  o.status = OrderStatus.statusInProgress
- 	main()
- 	define body(){
+ define page newOrderItem(orderedBook: Book){ 
+	var user: User :=  securityContext.principal
+ 	var inprogressOrder : List<Order> := from Order as o where o.customer = ~user
+ 	var dt	: DateTime := now()
+ 	var dtstr : String := dt.format("yyMMddHHmmssZ")
+ 	var ostatus: OrderStatus := statusInProgress	
+ 	var ord : Order	
+ 	var item : OrderItem
+ 	init{
+ 		inprogressOrder :=[o | o : Order in inprogressOrder where o.status == statusInProgress ];
+ 		item.count := orderedBook.hardCopyAvailableCount; 
+		item.book := orderedBook ; 
 	 	if (inprogressOrder.length == 0){
-	 		
-	 		<script>alert("No orders in progress. Creating a new order")</script>
-	 		
-	 		
+	 		ord  := Order{ code := dtstr , customer := securityContext.principal , status := ostatus , 
+	 		date :=  dt };
+	 		ord.orderItems.add(item);
+	 		ord.save();
 	 	}  
 	 	if(inprogressOrder.length == 1) {
-	 		<script>("adding the book to the in progress order")</script>
+	 		ord  :=	inprogressOrder[0];
+	 		ord.orderItems.add(item);
 	 	} 
+ 	} 
+ 	
+ 	main
+ 	define body(){
+	header{output("New OrderItem")}
+		//orderView(ord)
+		output("salam")
  	}
  	
  }
+ 
+ define orderView(order: Order){
+	par{ output(order.code)}
+	par{ output(order.date)}
+//	par{ output(order.orderItems) } 
+ }
+ 
  /*
    define ajax signin() {
     init{ if(!loggedIn()) { goto login(); } }
