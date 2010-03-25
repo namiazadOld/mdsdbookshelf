@@ -134,11 +134,6 @@ define page createbook(){
   	main()
 	define body(){
 	
-		
-		for(book :Book in books) {
-			bookDetail(book) 
-			
-		}
 	}
   	
   }
