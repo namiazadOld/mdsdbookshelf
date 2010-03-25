@@ -69,8 +69,8 @@ define search(){
 	
 	var inputSearch : String
 	
-	par{ label("Search: "){ input(inputSearch) } }
 	form{
+		par{ label("Search: "){ input(inputSearch) } }
 		action("Go!", action{ 
 		return searchResult(inputSearch); })
 	}
