@@ -8,7 +8,7 @@ entity User {
     password  :: Secret
     firstname :: String 
     lastname  :: String
-    gender    -> Gender
+    gender    -> Gender(not null)
     birthdate :: Date
     isactive  :: Bool
     email     :: Email

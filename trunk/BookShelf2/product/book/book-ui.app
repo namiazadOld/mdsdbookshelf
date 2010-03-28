@@ -10,6 +10,8 @@ access control rules
   rule page createbook() { isAdministrator() } 
   rule page bookList( genre: Genre) {!isAdministrator()}
   rule page searchResult (searchString : String) {true}
+  rule page testPage( book: Book) {true}
+ 
 section book management
 
 
@@ -107,22 +109,15 @@ define page createbook(){
 	  				par{ output("Publisher: " + book.publisher )}
 	  				par{ output ("By: " + authorString)}
   				}
-//  				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
-  				column{ par{navigate(testPage(book)){image("/images/addcart.png")	}}}
+  				column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
+//  				column{ par{navigate(testPage(book)){image("/images/addcart.png")	}}}
   			}	
   		}
   		
   		
   	</div>
   } 
-  define page testPage(book : Book ){
-  	main
-  	define body(){
-  			//orderView(ord)
-		output("salam")
-		output(book.title)
-  	}
-  }
+
   define page bookList(genre : Genre){
   		main()
 	define body(){
