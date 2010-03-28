@@ -1,6 +1,7 @@
 module user/user-ui
 
 imports user/user-data
+imports product/order/order-ui
 //imports user/test-data
 
 access control rules
@@ -122,28 +123,79 @@ section account management
 	init{ if(!loggedIn()) { return root(); } }
 	main
 	define body(){
-		accountData(user)
+		//accountData(user)
 	}
   }
 
   define account(user : User) {
+  	var ord: Order
+  	var inprogressOrder : List<Order>
+	init{
+	 	inprogressOrder := from Order as o where o.customer = ~user;
+		ord	:= Order{};
+		inprogressOrder :=[o | o : Order in inprogressOrder where o.status == statusInProgress ];
+		if(inprogressOrder.length == 1){
+			ord  :=	inprogressOrder[0];
+		}    	
+	}
     section{
       header{"Your Account"}
-      accountData(user)
+      accountData(user, ord)
+      viewNewOrders(ord, inprogressOrder)
+      par{output("")}
       changePassword(user)
 //      changeEmailAddress(user)
     }
   }
   
-  define accountData(user : User) {
+  define viewNewOrders(ord:Order , list : List<Order>){
+         header{"Latest Order in Progress"}
+	if(list.length == 1){ 
+		inProgressOrderView(ord)
+	}
+  }
+  define accountData(user : User, ord: Order) {
     section{
       header{"Account Data"}
-      group{
-        groupitem{ label("Your username is:      "){ output(user.username) } }
-        groupitem{ label("Your first name:             "){ output(user.firstname) } }
-        groupitem{ label("Your last name:             "){ output(user.lastname) } }
-        groupitem{ label("Your email address is: "){ output(user.email)    } }
-      }
+      		<table id="gradient-style">
+			row{
+				column{output("Username")}
+				column{output(user.username)}
+			}
+			row{
+				column{output("First Name")}
+				column{output(user.firstname)}
+			}
+			row{
+				column{output("Last Name")}
+				column{output(user.lastname)}
+			}
+			row{
+				column{output("Email")}
+				column{output(user.email)}
+			}
+			row{
+				column{output("Date of Birth")}
+				column{output(user.birthdate)}
+			}
+			row{
+				column{output("Phone NO")}
+				column{output(user.phoneno)}
+			}
+			row{
+				column{output("Mobile NO")}
+				column{output(user.mobileno)}
+			}
+			row{
+				column{output("Address1")}
+				column{output(user.address1)}
+			}
+			row{
+				column{output("Address2")}
+				column{output(user.address2)}
+			}
+		</table>
+
     }
   }
   
