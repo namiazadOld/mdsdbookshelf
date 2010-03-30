@@ -18,9 +18,7 @@ define page unresolvedauthorlist(){
 		section{
 			header { "Resolving Authors" }
 			form{
-				table
-				{
-				        
+				<table id="gradient-style">
 					for(author : UnresolvedAuthor)
 					{
 						var boolInput : Bool;
@@ -36,7 +34,7 @@ define page unresolvedauthorlist(){
 							}
 						}
 					}
-				}
+				</table>
 			}
 		}
 	}
