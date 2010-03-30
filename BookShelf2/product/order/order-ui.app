@@ -143,20 +143,21 @@ define page viewOrder(order : Order){
 				output(" No item is added ")
 			}		
 		</table>
-			//submit checkout(ord) {"Check out" }
+			submit checkout(ord) {"Check out" }
 		}
-		 action checkout(order: Order){
-		 	for(item: OrderItem in order.orderItems){
-		 		item.book.hardCopyAvailableCount := item.book.hardCopyAvailableCount - item.count; 
-		 	}
-		 	order.status := statusSubmitted;
-		 	order.date := now();
-		 	message("Order successfully checked out");
-		 	return mypage();
-		 }
+
 		 }		
+
+ action checkout(order: Order){
+ 	for(item: OrderItem in order.orderItems){
+ 		item.book.hardCopyAvailableCount := item.book.hardCopyAvailableCount - item.count; 
+ 	}
+ 	order.status := statusSubmitted;
+ 	order.date := now();
+ 	message("Order successfully checked out");
+ 	return mypage();
+ } 
  }
- 
  define page viewOrderHistory(){
    	var ord: Order
   	var submittedOrders : List<Order>
