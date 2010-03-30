@@ -12,6 +12,7 @@ section author management
 
 define page unresolvedauthorlist(){
         var boolSet := List<Bool>()
+        var boolInput : Bool;
 	init{ if(!loggedIn()) { goto root(); } }
 	main
 	define body(){
@@ -21,7 +22,6 @@ define page unresolvedauthorlist(){
 				<table id="gradient-style">
 					for(author : UnresolvedAuthor)
 					{
-						var boolInput : Bool;
 						row
 						{
 							column
