@@ -9,6 +9,7 @@ access control rules
   rule page signup()   { !isCustomer() && !isShipper() && !isAdministrator() }
   rule page mypage()   { isCustomer() }
   rule page profile(user: User) { isAdministrator() || isCustomer() || isShipper()}
+  rule page editProfile() { isAdministrator() || isCustomer() }
   rule ajaxtemplate signin()   { true }
   
 section changing password
@@ -195,7 +196,32 @@ section account management
 				column{output(user.address2)}
 			}
 		</table>
-
+		par{navigate(editProfile()){ "Edit Profile Information" }}
     }
   }
   
+define page editProfile(){
+	var user: User := securityContext.principal
+    main()
+    define body(){
+    
+      section{
+        header{"Edit Profile"}
+        form{ 
+          par{ label("Username"){ output(user.username) } }
+          par{ label("First Name"){ input(user.firstname) } }
+          par{ label("Last Name"){ input(user.lastname) } }
+          par{ label("Birthday"){ input(user.birthdate) } }
+          par{ label("Email"){ input(user.email) } }
+          
+          par{ label("Address Street1"){ input(user.address1) } }
+          par{ label("Address Street2"){ input(user.address2) } }
+          par{ label("Phone Number"){ input(user.phoneno) } }
+          par{ label("Mobile Number"){ input(user.mobileno) } }
+//          par{ label("Please enter the text below: "){ captcha() } }
+          action("Sign Up", action{  return mypage(); }) 
+        }
+      }
+    }
+	
+}
