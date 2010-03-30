@@ -134,7 +134,7 @@ define page createbook(){
 	define body(){
 		for(book :Book in books) {
 			bookDetail(book) 
-			output(book.authors)
+			//output(book.authors)
 		}
 	}
   	
