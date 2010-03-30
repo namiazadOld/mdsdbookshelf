@@ -127,7 +127,7 @@ define page viewOrder(order : Order){
 				output(" No item is added ")
 			}		
 		</table>
-			submit checkout(ord) {"Check out" }
+			//submit checkout(ord) {"Check out" }
 		}
 		 action checkout(order: Order){
 		 	for(item: OrderItem in order.orderItems){
