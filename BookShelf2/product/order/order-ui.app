@@ -23,7 +23,11 @@ define page viewOrder(order : Order){
  section order item management
 
   define deleteItemAction(order: Order , item: OrderItem){
-  	actionLink("Remove", action{ order.orderItems.remove(item); })
+  	actionLink("Remove", action{ order.orderItems.remove(item);
+  		if(order.orderItems.length ==0){
+  			return mypage();
+  		}
+  	 })
   }
    
  define page newOrderItem(orderedBook: Book){ 
@@ -94,7 +98,19 @@ define page viewOrder(order : Order){
 
  	define inProgressOrderView(ord: Order){
 		par{output("Order creation date: " + ord.date + "\n")}
-
+		
+		if(ord.orderItems.length==0){
+			<table id="gradient-style">
+				<thead>
+					<tr>
+						<th scope="col">output("Currently there is no item in your list.")</th>
+				        </tr>
+				</thead>
+			</table>
+		
+		} else{
+		
+		
 		form{
 		<table id="gradient-style">
 			<thead>
@@ -137,6 +153,7 @@ define page viewOrder(order : Order){
 		 	order.date := now();
 		 	message("Order successfully checked out");
 		 	return mypage();
+		 }
 		 }		
  }
  
