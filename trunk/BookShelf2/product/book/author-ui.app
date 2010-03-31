@@ -19,30 +19,31 @@ define page authordetail(author: Author)
 	var life : String
 	init
 	{
-		life := "";
+		life := author.birthDate + " - " + author.deathDate;
+		// life := "";
 		
-		if (author.deathDate != null)
-		{
-			if (author.birthDate == null)
-			{
-				life := "Unknown - " + author.deathDate; 
-			}
-			else
-			{
-				life := author.birthDate + " - " + author.deathDate;
-			}
-		}
-		else
-		{
-			if (author.birthDate == null)
-			{
-				life := "";
-			}
-			else
-			{
-				life := author.birthDate + " - present";
-			}
-		}
+		//if (author.deathDate != null)
+		// {
+			// if (author.birthDate == null)
+			// {
+				// life := "Unknown - " + author.deathDate; 
+			// }
+			// else
+			// {
+				// life := author.birthDate.toString() + " - " + author.deathDate.toString();
+			// }
+		// }
+		// else
+		// {
+			// if (author.birthDate == null)
+			// {
+				// life := "";
+			// }
+			// else
+			// {
+				// life := author.birthDate + " - present";
+			// }
+		// }
 	}
 	main()
 	define body()
@@ -54,6 +55,7 @@ define page authordetail(author: Author)
   				column{ 
 	  				header{output(author.name)}	
 	  				par{ output(life)}
+	  				par {output(author.description)}
 	  				if (author.bookList.length == 0)
 	  				{
 	  					par{ output("No book currently available from this author")}
@@ -170,11 +172,16 @@ define page unresolvedauthorselection(inputSearch : String, author: Author)
 			
 			for(unResAuthor: UnresolvedAuthor in authors)
 			{
-				var book : Book := unResAuthor.book;
-				book.unresolvedAuthorList.remove(unResAuthor);
-				book.authorList.add(author);
-				unResAuthor.delete();
+				if (inputs.get(authors.indexOf(unResAuthor)).content == true)
+				{
+					// message(unResAuthor.fullName);
+					var book : Book := unResAuthor.book;
+					book.unresolvedAuthorList.remove(unResAuthor);
+					book.authorList.add(author);
+					unResAuthor.delete();
+				}
 			}
+			
 			message("Merging process was done successfully.");
 			return resolvedauthorsearch();
 		}
