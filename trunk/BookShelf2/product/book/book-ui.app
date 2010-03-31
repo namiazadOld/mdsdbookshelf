@@ -154,7 +154,7 @@ define page book(book: Book){
 					  				
 	  				header{output(book.title)}	
 
-	  				par[class :="className" ]{	output(book.title)	}
+	  				//par[class :="className" ]{	output(book.title)	}
 	  				par{ output("Publisher: " + book.publisher )}
 	  				par{ output ("By: " + authorString)}
   				}
