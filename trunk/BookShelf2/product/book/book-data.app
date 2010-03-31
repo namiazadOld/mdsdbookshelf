@@ -38,7 +38,7 @@ entity Book{
 		{
 			for (author: Author in this.authorList)
 			{
-				result := result + author + " ";
+				result := result + author.name + " ";
 			}
 		}
 		return result;
