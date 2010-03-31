@@ -113,38 +113,14 @@ define page book(book: Book){
     
  
    define bookDetail(book : Book){
-        var authorString : String
+        var resolvedAuthorList : List<Author>
         var count := 0
-   	init {
- 		if (book.unresolvedAuthorList != null)
- 		{
- 			for (author: UnresolvedAuthor in book.unresolvedAuthorList)
- 			{
- 				authorString := authorString + author.fullName;
- 				count := count + 1;
- 				
- 				if (count < book.numberOfAuthors())
- 				{
- 					authorString := authorString + ", ";
- 				}
- 			}
- 			
- 		}  
- 		
+   	init 
+   	{
  		if (book.authorList != null)
  		{
- 			for (author: Author in book.authorList)
- 			{
- 				authorString := authorString + author.name;
- 				count := count + 1;
- 				
- 				if (count < book.numberOfAuthors())
- 				{
- 					authorString := authorString + ", ";
- 				}
- 			}
- 			
- 		}  		
+ 			resolvedAuthorList := book.authorList.list();
+ 		}
    	}
   	<div id="bookDetail">
   		table{
@@ -156,16 +132,34 @@ define page book(book: Book){
 
 	  				//par[class :="className" ]{	output(book.title)	}
 	  				par{ output("Publisher: " + book.publisher )}
-	  				par{ output ("By: " + authorString)}
+	  				par
+	  				{
+	  					if (resolvedAuthorList != null)
+				 		{
+				 			for(id:Int from 0 to resolvedAuthorList.length)
+				 			{
+				 				navigate(authordetail(resolvedAuthorList.get(id))){output(resolvedAuthorList.get(id).name)}
+				 				if (id + 1 < book.numberOfAuthors())
+				 				{
+				 					output(", ")
+				 				}
+				 			}
+				 		}  		
+				 		
+				 		if (book.unresolvedAuthorList != null)
+				 		{
+				 			for(id:Int from 0 to book.unresolvedAuthorList.length)
+				 			{
+				 				output(book.unresolvedAuthorList.get(id).fullName)
+				 				if (id + 1 < book.unresolvedAuthorList.length)
+				 				{
+				 					output(", ")
+				 				}
+				 			}
+				 		}  
+	  				}
+	  				
   				}
-  				if(book.hardCopyAvailableCount > 0){
-  					column{ par{navigate(newOrderItem(book)){image("/images/addcart.png")	}}}
-  				} else {
-  					column{ par{output("Currently Not Available") }}
-  				}
-//  				column{ par{navigate(editBook(book)){image("/images/edit.png")	}}}
-//  				column{ column{deleteBook(book)} }
-//  				column{ par{navigate(testPage(book)){image("/images/addcart.png")	}}}
   			}	
   		}
   		
