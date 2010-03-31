@@ -99,6 +99,7 @@ define leftsidemenu(){
     <li>navigate(creategenre()){ "Define New Genre" }</li>
     <li>navigate(unresolvedauthorlist()) {"Resolving Authors"} </li>
     genreMenu()
+    
   </ul>
 }
  
