@@ -135,7 +135,7 @@ define page book(book: Book){
  		{
  			for (author: Author in book.authorList)
  			{
- 				authorString := authorString + author;
+ 				authorString := authorString + author.name;
  				count := count + 1;
  				
  				if (count < book.numberOfAuthors())
