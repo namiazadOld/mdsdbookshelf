@@ -19,6 +19,7 @@ access control rules
 section pages
 
 define page root() {
+	
   main()
   define body() {
     "Welcome to BookShelf!"
