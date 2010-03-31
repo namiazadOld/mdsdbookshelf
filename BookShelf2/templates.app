@@ -90,6 +90,7 @@ define applicationmenu() {
     <li>navigate(usermgmt()){ "User Management" }</li>
     <li>navigate(createbook()){ "Define New Book" }</li>
     <li>navigate(creategenre()){ "Define New Genre" }</li>
+    <li>navigate(genrelist()){ "Edit Genre" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
   </ul>
@@ -101,6 +102,7 @@ define leftsidemenu(){
     <li>navigate(usermgmt()){ "User Management" }</li>
     <li>navigate(createbook()){ "Define New Book" }</li>
     <li>navigate(creategenre()){ "Define New Genre" }</li>
+    <li>navigate(genrelist()){ "Edit Genre" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
     genreMenu()
