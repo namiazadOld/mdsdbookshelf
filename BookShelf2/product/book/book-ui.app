@@ -30,6 +30,7 @@ define page createbook(){
 			form{
 				par{ label("Title "){ input(book.title) } }
 				par {label ("Authors ") {input(authors)}}
+				par {label ("Price ") {input(book.price)}}
 				par{ label("ISBN "){ input(book.isbn13) } }
 				par{ label("Front Image "){ input(book.frontImage) } }
 				par{ label("Back Image "){ input(book.backImage) } }
@@ -162,8 +163,8 @@ define page book(book: Book){
   				} else {
   					column{ par{output("Currently Not Available") }}
   				}
-  				column{ par{navigate(editBook(book)){image("/images/edit.png")	}}}
-  				column{ column{deleteBook(book)} }
+//  				column{ par{navigate(editBook(book)){image("/images/edit.png")	}}}
+//  				column{ column{deleteBook(book)} }
 //  				column{ par{navigate(testPage(book)){image("/images/addcart.png")	}}}
   			}	
   		}

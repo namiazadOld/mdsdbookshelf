@@ -52,6 +52,8 @@ access control rules
     var user := findUser(username.toLowerCase());
     validate(user != null && user.password.check(password), 
              "That combination of username and password is not correct.");
+    validate(user != null && user.isactive, 
+             "Your account is disabled by administrator");
     securityContext.principal := user;  
     return true; 
   }  
