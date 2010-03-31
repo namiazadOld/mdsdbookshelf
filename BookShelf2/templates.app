@@ -88,6 +88,10 @@ define applicationmenu() {
     <li>navigate(signup()){ "Singup" }</li>
     <li>navigate(mypage()){ "My Page" }</li>
     <li>navigate(usermgmt()){ "User Management" }</li>
+     <li>navigate(createbook()){ "Define New Book" }</li>
+    <li>navigate(creategenre()){ "Define New Genre" }</li>
+    <li>navigate(createauthor()){ "Define New Author" }</li>
+    <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
   </ul>
   
 }
