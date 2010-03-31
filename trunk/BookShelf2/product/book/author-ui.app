@@ -2,61 +2,204 @@ module product/book/author-ui
 
 imports user/user-data
 imports product/book/author-data
+imports product/book/util-data
 
 access control rules
   rule page createauthor() { isAdministrator() } 
-  rule ajaxtemplate searchAuthorAjax(){true}
-  rule page unresolvedauthorlist() {isAdministrator()}
+  rule page resolvedauthorsearch() {isAdministrator()}
+  rule page resolvedauthorselection(inputSearch : String) {isAdministrator()}
+  rule page unresolvedauthorsearch(author : Author) {isAdministrator()}
+  rule page unresolvedauthorselection(inputSearch : String, author: Author) {isAdministrator()}
 
 section author management
 
-define page unresolvedauthorlist(){
-        var boolSet := List<Bool>()
-        var boolInput : Bool;
-	init{ if(!loggedIn()) { goto root(); } }
-	main
+define page resolvedauthorsearch()
+{
+	var inputSearch : String
+	main()
+	define body()
+	{
+		section
+		{
+			form{
+				par{ label("Search for resolved author: "){ input(inputSearch) } }
+				action("Go!", action{ 
+				return resolvedauthorselection(inputSearch); })
+			}
+		}
+	}	
+}
+
+define page unresolvedauthorsearch(author : Author)
+{
+	var inputSearch : String
+	main()
+	define body()
+	{
+		section
+		{
+			form{
+				par{ label("Search for unresolved author: "){ input(inputSearch) } }
+				action("Go!", action{ 
+				return unresolvedauthorselection(inputSearch, author); })
+			}
+		}
+	}	
+}
+
+define page unresolvedauthorselection(inputSearch : String, author: Author)
+{
+	var authors : List<UnresolvedAuthor> := searchUnresolvedAuthor(inputSearch)
+	var boolInputs : List<CustomBool>;
+	init
+	{
+		if (authors.length == 0)
+		{
+			message("No author was found!");
+			return unresolvedauthorsearch(author);
+		}
+			
+		for(id:Int from 0 to authors.length)
+		{
+			var entry:= CustomBool{};
+			entry.content := false;
+			boolInputs.add(entry);
+		}
+	}
+	
+	main()
 	define body(){
-		section{
-			header { "Resolving Authors" }
+		section
+		{
 			form{
 				<table id="gradient-style">
-					for(author : UnresolvedAuthor)
+					for(id:Int from 0 to authors.length)
 					{
 						row
 						{
 							column
 							{
-								input(boolInput)
+								input(boolInputs.get(id).content)
 							}
 							column
 							{
-								output(author.fullName)
+								output(authors.get(id).name)
 							}
 						}
 					}
 				</table>
+				submit unresolvedAuthorSelectionAction(author, authors, boolInputs, inputSearch) {"Next" }
 			}
+		}
+		action unresolvedAuthorSelectionAction(author: Author, authors : List<UnresolvedAuthor>, inputs : List<CustomBool>, inputSearch : String)
+		{
+			var index : Int;
+			var count : Int := 0;
+			
+			for(id:Int from 0 to inputs.length)
+			{
+				if (inputs.get(id).content == true)
+				{
+					count := count + 1;
+					index := id;
+				}
+			}
+			
+			if (count == 0)
+			{
+				message("At least one unresolved author should be selected!");
+				return unresolvedauthorselection(inputSearch, author);
+			}
+			
+			for(unResAuthor: UnresolvedAuthor in authors)
+			{
+				var book : Book := unResAuthor.book;
+				book.unresolvedAuthorList.remove(unResAuthor);
+				book.authorList.add(author);
+				unResAuthor.delete();
+			}
+			message("Merging process was done successfully.");
+			return resolvedauthorsearch();
 		}
 	}
 }
 
-define ajax searchAuthorAjax(){
-  	var author:= Author{}
-  	var searchResult := List<Author>()
-  	
-  	action doit() { 
-  		searchResult := searchAuthor(author);
-  	}
-  	
-  	header{"Find an author"}
-  	form {
-  		 par{ label("First Name "){ input(author.firstName) } }
-  		 par{ label("Last Name "){ input(author.lastName) } }
-  		 par{ label("Nationality "){ input(author.nationality) } }
-  		 par{ label("Gender "){ input(author.gender) } }
-  		 par{ action("Search", doit())[id:=submit,ajax] }
-  	}
-  }
+define page resolvedauthorselection(inputSearch : String)
+{
+	var authors : List<Author> := searchAuthor(inputSearch)
+	var boolInputs : List<CustomBool>;
+	init 
+	{
+		if (authors.length == 0)
+		{
+			message("No author was found!");
+			return resolvedauthorsearch();
+		}
+			
+		for(id:Int from 0 to authors.length)
+		{
+			var entry:= CustomBool{};
+			entry.content := false;
+			boolInputs.add(entry);
+		}
+	}
+	
+	main()
+	define body(){
+		section
+		{
+			form{
+				<table id="gradient-style">
+					for(id:Int from 0 to authors.length)
+					{
+						row
+						{
+							column
+							{
+								input(boolInputs.get(id).content)
+							}
+							column
+							{
+								output(authors.get(id).name)
+							}
+						}
+					}
+				</table>
+				submit resolvedAuthorSelectionAction(authors, boolInputs, inputSearch) {"Next" }
+			}
+		}
+	}
+	action resolvedAuthorSelectionAction(authors : List<Author>, inputs : List<CustomBool>, inputSearch : String)
+	{
+		var index : Int;
+		var count : Int := 0;
+		
+		for(id:Int from 0 to inputs.length)
+		{
+			if (inputs.get(id).content == true)
+			{
+				count := count + 1;
+				index := id;
+			}
+			
+			if (count == 0)
+			{
+				message("One author should be selected!");
+				return resolvedauthorselection(inputSearch);
+			}
+			
+			if (count > 1)
+			{
+				message("Only one author should be selected!");
+				return resolvedauthorselection(inputSearch);
+			}
+		}
+		
+		return unresolvedauthorsearch(authors.get(index));
+	}
+}
+
+
 
 define page createauthor(){
 	init{ if(!loggedIn()) { goto root(); } }
@@ -71,6 +214,7 @@ define page createauthor(){
 				par{ label("Email "){ input(author.email) } }
 				par{ label("Gender "){ input(author.gender) } }
 				par{ label("Image "){ input(author.image) } }
+				par{ label("Birth Date "){ input(author.birthDate) } }
 				par{ label("Death Date "){ input(author.deathDate) } }
 				par{ label("Nationality "){ input(author.nationality) } }
 				par{ label("Description "){ input(author.description) } }

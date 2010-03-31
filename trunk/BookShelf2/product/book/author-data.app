@@ -7,25 +7,48 @@ function searchAuthor(author : Author) :  List<Author>{
   }  
 
 entity UnresolvedAuthor{
-	fullName :: String
+	fullName :: String (name, searchable)
 	book -> Book
+}
+
+function validateDate(birthDate : Date, deathDate: Date) : Bool
+{
+	if (birthDate == null)
+	{
+		return true;
+	}
+	
+	if (deathDate == null)
+	{
+		return true;
+	}
+	
+	if (deathDate.after(birthDate))
+		{
+			return true;
+		}
+	return false;
 }
 
 entity Author{
 
 	firstName :: String
-	lastName :: String
+	lastName :: String (validate(lastName.length() != 0, "Lastname is mandatory field"))
 	email :: Email
-	name :: String := firstName + lastName
+	name :: String(searchable, name) := firstName + lastName 
 	gender    -> Gender
 	image :: Image
-	deathDate :: Date
+	birthDate :: Date 
+	deathDate :: Date (validate(validateDate(birthDate, deathDate), "Death date is not valid"))
 	nationality :: String
 	description :: String	
 	bookList -> Set<Book>
 	function create(){
 		this.save();
-		this.image.resize(200,128);
+		if (this.image != null)
+		{
+			this.image.resize(200,128);
+		}
 		log("Author Creation Log: " + this);
 		message("Author record has been created successfully.");
 	}
