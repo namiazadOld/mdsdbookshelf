@@ -10,8 +10,65 @@ access control rules
   rule page resolvedauthorselection(inputSearch : String) {isAdministrator()}
   rule page unresolvedauthorsearch(author : Author) {isAdministrator()}
   rule page unresolvedauthorselection(inputSearch : String, author: Author) {isAdministrator()}
+  rule page authordetail(author: Author) {true}
 
 section author management
+
+define page authordetail(author: Author)
+{
+	var life : String
+	init
+	{
+		life := "";
+		
+		if (author.deathDate != null)
+		{
+			if (author.birthDate == null)
+			{
+				life := "Unknown - " + author.deathDate; 
+			}
+			else
+			{
+				life := author.birthDate + " - " + author.deathDate;
+			}
+		}
+		else
+		{
+			if (author.birthDate == null)
+			{
+				life := "";
+			}
+			else
+			{
+				life := author.birthDate + " - present";
+			}
+		}
+	}
+	main()
+	define body()
+	{
+		<div id="authorDetail">
+  		table{
+  			row{
+  				column{	output(author.image)	}
+  				column{ 
+	  				header{output(author.name)}	
+	  				par{ output(life)}
+	  				if (author.bookList.length == 0)
+	  				{
+	  					par{ output("No book currently available from this author")}
+	  				}
+	  				else
+	  				{
+	  					par {navigate(root()){"Available books from this author"}}
+	  				}
+  				}
+  			}	
+  		}  		
+  		</div>
+	}
+}
+
 
 define page resolvedauthorsearch()
 {
@@ -223,3 +280,6 @@ define page createauthor(){
 		}
 	}
   }
+  
+    
+  
