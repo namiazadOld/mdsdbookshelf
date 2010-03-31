@@ -35,7 +35,7 @@ entity Author{
 	firstName :: String
 	lastName :: String (validate(lastName.length() != 0, "Lastname is mandatory field"))
 	email :: Email
-	name :: String(searchable, name) := firstName + lastName 
+	name :: String(searchable, name) := firstName + " " + lastName 
 	gender    -> Gender
 	image :: Image
 	birthDate :: Date 
