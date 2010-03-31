@@ -124,7 +124,7 @@ section account management
 	init{ if(!loggedIn()) { return root(); } }
 	main
 	define body(){
-		//accountData(user)
+		accountData(user)
 	}
   }
 
@@ -141,7 +141,7 @@ section account management
 	}
     section{
       header{"Your Account"}
-      accountData(user, ord)
+      accountData(user)
       viewNewOrders(ord, inprogressOrder)
       par{output("")}
       changePassword(user)
@@ -151,11 +151,9 @@ section account management
   
   define viewNewOrders(ord:Order , list : List<Order>){
          header{"Latest Order in Progress"}
-	if(list.length == 1){ 
 		inProgressOrderView(ord)
-	}
   }
-  define accountData(user : User, ord: Order) {
+  define accountData(user : User) {
     section{
       header{"Account Data"}
       		<table id="gradient-style">
@@ -196,7 +194,12 @@ section account management
 				column{output(user.address2)}
 			}
 		</table>
-		par{navigate(editProfile()){ "Edit Profile Information" }}
+		if( isCustomer()){
+			par{navigate(editProfile()){ "Edit Profile Information" }}
+		}
+		if( isAdministrator()){
+			par{navigate(editUser(user)){ "Edit User" }}
+		}
     }
   }
   
@@ -219,7 +222,7 @@ define page editProfile(){
           par{ label("Phone Number"){ input(user.phoneno) } }
           par{ label("Mobile Number"){ input(user.mobileno) } }
 //          par{ label("Please enter the text below: "){ captcha() } }
-          action("Sign Up", action{  return mypage(); }) 
+          action("Save", action{  return mypage(); }) 
         }
       }
     }

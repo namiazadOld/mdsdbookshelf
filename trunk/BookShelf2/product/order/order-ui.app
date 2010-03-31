@@ -5,7 +5,7 @@ imports product/order/order-data
 access control rules
   rule page newOrderItem(book : Book) { isCustomer() } 
   rule page viewOrderHistory(){isCustomer()|| isAdministrator()}
-
+  rule page payment(order: Order){ isCustomer()}
 section	order management
 
 define page newOrder(){
@@ -29,6 +29,7 @@ define page viewOrder(order : Order){
   		}
   	 })
   }
+  
    
  define page newOrderItem(orderedBook: Book){ 
  	
@@ -51,7 +52,7 @@ define page viewOrder(order : Order){
 	 	inprogressOrder := from Order as o where o.customer = ~user;
 	 	log("Query done");
 	 	 dt	 := now();
-	 	dtstr := dt.format("yyMMddHHmmssZ");
+	 	dtstr := dt.format("yyMMddHHmmss");
 	 	ostatus := statusInProgress	;
 	 	 ord	:= Order{};
 	 	 item := OrderItem{};
@@ -63,9 +64,10 @@ define page viewOrder(order : Order){
 		item.book := orderedBook ; 
 	
 	 	if (inprogressOrder.length == 0){
-	 		ord  := Order{ code := dtstr , customer := securityContext.principal , status := ostatus , 
+	 		ord  := Order{ /*code := dtstr , */ customer := securityContext.principal , status := ostatus , 
 	 		date :=  dt };
 	 		ord.orderItems.add(item);
+	 		ord.customer := user;
 	 		log("In progress order is new");
 	 		ord.save();
 	 	}  
@@ -118,30 +120,31 @@ define page viewOrder(order : Order){
 					<th scope="col">output("Title")</th>
 					<th scope="col">output("Count")</th>
 					<th scope="col">output("Available")</th>
-			        	<th scope="col">output("")</th>
+					<th scope="col">output("Unit Price")</th>
+		        	<th scope="col">output("")</th>
 			        	//<th scope="col">Rating</th>
 			        </tr>
 			</thead>
-			if (ord.orderItems.length >0){
 					for(item:OrderItem in ord.orderItems){
 					
 						row{
 							column{output( item.book.title)}
-							column{ input(item.count) { 
+							column{ input(item.count) } 
 							//validate((item.count <= item.book.hardCopyAvailableCount), 
 							//"Not enough available.")
-							 
-							}
 							column{ output( item.book.hardCopyAvailableCount)}
-							
+							column{	output(	item.book.price)}
+							column{
+							submitlink action{
+						          ord.orderItems.remove(item);
+						          if(ord.orderItems.length ==0){
+						              return mypage();
+						          }} { image("/images/remove.gif") }
 							}
-							column{deleteItemAction(ord, item)}
+						
 						}
 					}
 					
-			} else {
-				output(" No item is added ")
-			}		
 		</table>
 			submit checkout(ord) {"Check out" }
 		}
@@ -149,28 +152,81 @@ define page viewOrder(order : Order){
 		 }		
 
  action checkout(order: Order){
- 	for(item: OrderItem in order.orderItems){
- 		item.book.hardCopyAvailableCount := item.book.hardCopyAvailableCount - item.count; 
- 	}
- 	order.status := statusSubmitted;
- 	order.date := now();
- 	message("Order successfully checked out");
- 	return mypage();
+ 	return payment(order);
  } 
+ }
+ define page payment(order: Order){
+	var totalPrice: Float :=0.0
+ 	main
+ 	define body(){
+	init{
+		
+		for(item : OrderItem in order.orderItems){
+			
+			totalPrice := totalPrice + item.count.floatValue()* item.book.price; 
+		}
+	}
+ 	output("Order to be checked out:")
+		
+		form{
+		<table id="gradient-style">
+			<thead>
+				<tr>
+					<th scope="col">output("Title")</th>
+					<th scope="col">output("Count")</th>
+					<th scope="col">output("Unit Price")</th>
+			        	//<th scope="col">Rating</th>
+			        </tr>
+			</thead>
+					for(item:OrderItem in order.orderItems){
+					
+						row{
+							column{output( item.book.title)}
+							column{ output(item.count) } 
+							//validate((item.count <= item.book.hardCopyAvailableCount), 
+							//"Not enough available.")
+							column{	output(	item.book.price)}
+						
+						}
+					}
+			<tfoot>
+				<tr>
+					<th scope="col">output("")</th>
+					<th scope="col">output("")</th>
+					<th scope="col">output(totalPrice)</th>
+			        	//<th scope="col">Rating</th>
+			        </tr>
+			</tfoot>
+					
+		</table>
+		submit pay(order){"Pay"}
+ 	}
+
+ }
+	 action pay(order: Order){
+		for(item: OrderItem in order.orderItems){
+	 		item.book.hardCopyAvailableCount := item.book.hardCopyAvailableCount - item.count; 
+	 	}
+	 	order.status := statusSubmitted;
+	 	order.date := now();
+	 	message("Payment successfully done. Your order will be delivered or emailed to your address.");
+		return mypage();
+	 }
  }
  define page viewOrderHistory(){
    	var ord: Order
   	var submittedOrders : List<Order>
-  	var user: User := securityContext.principal
-	init{
-	
-	 	submittedOrders := from Order as o where o.customer = ~user;
-		
-		submittedOrders :=[o | o : Order in submittedOrders where o.status == statusSubmitted ];
-	}
+  	var user: User 
 	
 	main
 	define body(){
+	init{
+		user := securityContext.principal;
+	 	submittedOrders := from Order as o where o.customer = ~user;
+		
+	//	submittedOrders :=[o | o : Order in submittedOrders where o.status == statusSubmitted ];
+	}
+			header{output(user.firstname + " order history") }
 			<table id="gradient-style">
 			<thead>
 				<tr>
@@ -194,24 +250,3 @@ define page viewOrder(order : Order){
 	}
  
  }
- define orderView(order: Order){
-	par{ output(order.code)}
-	par{ output(order.date)}
-//	par{ output(order.orderItems) } 
- }
- 
- /*
-   define ajax signin() {
-    init{ if(!loggedIn()) { goto login(); } }
-    var username : String
-    var password : Secret
-    action doit(){ signin(username, password); }
-    header{"Sign In"}
-    form{
-      par{ label("Username"){ input(username) } }
-      par{ label("Password"){ input(password) } }
-      //par{ validate(checkPassword(username, password), "That combination of username and password is not correct.") }
-      par{ action("Sign in", doit())[id:=submit,ajax] }
-    }
-    }
-    */

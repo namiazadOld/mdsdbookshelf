@@ -11,7 +11,7 @@ entity OrderItem{
 }
 
 entity Order{
-    	code		:: String (id,validate(isUniqueOrder(this),"An order with that code already exists."))
+//    	code		:: String (id,validate(isUniqueOrder(this),"An order with that code already exists."))
 	orderItems	-> Set<OrderItem> (inverse = OrderItem.order)
 	date		:: Date
 	status		-> OrderStatus
