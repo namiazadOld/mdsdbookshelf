@@ -10,7 +10,7 @@ imports product/book/comment-ui
 access control rules
   rule page createbook() { isAdministrator() }
   rule page editbook(book: Book) { isAdministrator() }
-  rule page bookList( genre: Genre) {!isAdministrator()}
+  rule page bookList( genre: Genre) {true}
   rule page searchResult (searchString : String) {true}
   rule page testPage( book: Book) {true}
   rule page bookListByAuthor(author : Author) {true}
@@ -458,7 +458,7 @@ define bookDetail(book : Book)
   				if(book.hardCopyAvailableCount > 0){
 					column{ 
 							submitlink action{
-								var order: Order := createOrderItem(book);
+								var order: Order := createOrderItem(book, null as SpecialOffer);
 								return viewInProgressOrder(order);
 						          } { image("/images/addcart.png") }
 					}
@@ -476,10 +476,11 @@ define bookDetail(book : Book)
   define page bookList(genre : Genre){
   		main()
 	define body(){
-		for(book :Book in genre.bookList) {
-			bookDetail(book) 
-			
-		}
+//		for(book :Book in genre.bookList) {
+//			bookDetail(book) 
+//			
+//		}
+		printBookList(genre.bookList.list())
 	}
   }
   
@@ -513,5 +514,59 @@ define deleteBook(book: Book){
 	}
   	
   }
-  
 
+define printBookList(books: List<Book>){
+  	var boolInputs : List<CustomBool>
+  	var tbool : CustomBool
+  	var specialOffer:= SpecialOffer{}
+	init{
+		for(id:Int from 0 to books.length)
+		{
+			var entry:= CustomBool{};
+			entry.content := false;
+			boolInputs.add(entry);
+		}		
+	}
+  		if(!isAdministrator()){
+			for(book :Book in books) {
+				bookDetail(book) 
+				//output(book.authors)
+			}
+		}
+		else{
+			// bookDetailTemp.
+			form{
+				par{
+					submit addToSpecialOfferAction(specialOffer, books, boolInputs) {"Add selected to offer" }
+					input(specialOffer)
+				}	
+				<hr/>
+				for(id:Int from 0 to books.length)
+				{
+			  		<table>
+			  			row{
+			  				if(isAdministrator()){
+			  					column{	input(boolInputs.get(id).content)}
+			  				}
+			  				
+							column{bookDetail(books.get(id) )}
+						}
+					 </table>
+					//output(book.authors)
+				
+				}
+			}
+		}
+		action addToSpecialOfferAction(specialOffer : SpecialOffer, books: List<Book>, boolInputs : List<CustomBool>){
+			log("Add to special offer action called.");
+		  	for(id:Int from 0 to books.length){
+		  		if(boolInputs.get(id).content){
+		  			specialOffer.items.add(books.get(id));
+		  			
+		  		}
+		  	}
+		  	return editSpecialOffer(specialOffer);
+		}
+		  	
+  }
+  

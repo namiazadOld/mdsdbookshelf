@@ -7,7 +7,6 @@ access control rules
   rule page creategenre() { isAdministrator() }
   rule page genrelist() {isAdministrator()} 
   rule page editgenre(genre: Genre) {isAdministrator()}
-
 section genre management
 
 define page creategenre(){
@@ -59,7 +58,7 @@ define page creategenre(){
 
 			for(genre :Genre ){
 				row{
-					column{output(genre.title)}
+					column{navigate(bookList(genre)){output(genre.title)}}
 					column{output(genre.description)}
 					column{navigate(editgenre(genre)){image("/images/edit.png")}}
 					column 
@@ -89,3 +88,4 @@ define page creategenre(){
   			<li>navigate(bookList(genre)){ output(genre.title) }</li>
   		}
   }
+  
