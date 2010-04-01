@@ -12,8 +12,121 @@ access control rules
   rule page unresolvedauthorsearch(author : Author) {isAdministrator()}
   rule page unresolvedauthorselection(inputSearch : String, author: Author) {isAdministrator()}
   rule page authordetail(author: Author) {true}
+  rule page editauthor(author: Author) {isAdministrator()}
+  rule page authorlist() {isAdministrator()}
+  rule page authorlistforedit(inputSearch : String) {isAdministrator()}
 
 section author management
+
+define page authorlist()
+{
+	var inputSearch : String
+	main()
+	define body()
+	{
+		section
+		{
+			form{
+				par{ label("Search for resolved author: "){ input(inputSearch) } }
+				action("Go!", action{ 
+				return authorlistforedit(inputSearch); })
+			}
+		}
+	}	
+}
+
+define page authorlistforedit(inputSearch : String)
+{
+	var authors : List<Author> := searchAuthor(inputSearch)
+	init{ if(!loggedIn()) { goto root(); } }
+	main()
+	define body(){
+		<table id="gradient-style">
+			<thead>
+				<tr>
+					<th scope="col">output("Name")</th>
+					<th scope="col">output("Nationality")</th>
+					<th scope="col">output("")</th>
+					<th scope="col">output("")</th>
+			        </tr>
+			</thead>
+
+			for (author: Author in authors){
+				row{
+					column{output(author.name)}
+					column{output(author.nationality)}
+					column{navigate(editauthor(author)){image("/images/edit.png")}}
+					column 
+					{
+						submitlink action
+							{
+					          	if (author.bookList.length == 0)
+					          	{
+					          		author.delete();
+					          		message("Author has been deleted successfully.");
+					          	}
+					          	else
+					          	{
+					          		message("If there is no book wrote by this author, that author can be removed.");
+					          	}
+					          	return authorlistforedit(inputSearch);
+	
+							}{ image("/images/remove.gif")} 
+					}
+					
+				}
+			}
+			</table>
+	}
+}
+
+define page editauthor(author: Author)
+{
+	main()
+	define body()
+	{
+		section
+		{
+			header { "Edit Author" }
+			form
+			{
+				<div id="authorDetail">
+		  		table
+		  		{
+		  			column
+		  			{
+		  				row {output (author.image)}
+		  				row {label("New Image"){input(author.image)}}
+		  			}	
+		  			column
+		  			{
+		  				row {label("Firstname "){input(author.firstName)}}
+		  				row {label("Lastname "){input(author.lastName)}}
+		  				row {label("Email "){input(author.email)}}
+		  				row {label("Gender "){input(author.gender)}}
+		  				row {label("Birth date "){input(author.birthDate)}}
+		  				row {label("Death date "){input(author.deathDate)}}
+		  				row {label("Nationality "){input(author.nationality)}}
+		  				row {label("Description "){input(author.description)}}
+		  			}
+		  		}  		
+  				</div>
+  				action("Save", action
+  								{ 
+  									
+  									author.save();
+  									// if (author.image != null)
+									// {
+										// author.image.resize(200, 128);
+									// } 
+  									return authordetail(author); 
+  								}
+  					 	)
+			}
+				
+		}
+	}
+}
 
 define page authordetail(author: Author)
 {
@@ -63,6 +176,30 @@ define page authordetail(author: Author)
 	  				{
 	  					par {navigate(bookListByAuthor(author)){"Available books from this author"}}
 	  				}
+	  				par{navigate(editauthor(author)){"Edit"}}
+	  				par
+	  				{
+	  					if (isAdministrator())
+	  					{
+	  						submitlink action
+							{
+					          	if (author.bookList.length == 0)
+					          	{
+					          		author.delete();
+					          		message("Author has been deleted successfully.");
+					          		return root();
+					          	}
+					          	else
+					          	{
+					          		message("If there is no book wrote by this author, that author can be removed.");
+					          		return authordetail(author);
+					          	}
+	
+							}{ output("Remove")} 
+	  					}
+	  					
+	  				}
+	  				
   				}
   			}	
   		}  		
