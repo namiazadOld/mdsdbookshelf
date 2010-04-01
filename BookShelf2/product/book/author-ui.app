@@ -3,6 +3,7 @@ module product/book/author-ui
 imports user/user-data
 imports product/book/author-data
 imports product/book/util-data
+imports product/book/book-ui
 
 access control rules
   rule page createauthor() { isAdministrator() } 
@@ -16,35 +17,6 @@ section author management
 
 define page authordetail(author: Author)
 {
-	var life : String
-	init
-	{
-		life := author.birthDate + " - " + author.deathDate;
-		// life := "";
-		
-		//if (author.deathDate != null)
-		// {
-			// if (author.birthDate == null)
-			// {
-				// life := "Unknown - " + author.deathDate; 
-			// }
-			// else
-			// {
-				// life := author.birthDate.toString() + " - " + author.deathDate.toString();
-			// }
-		// }
-		// else
-		// {
-			// if (author.birthDate == null)
-			// {
-				// life := "";
-			// }
-			// else
-			// {
-				// life := author.birthDate + " - present";
-			// }
-		// }
-	}
 	main()
 	define body()
 	{
@@ -54,7 +26,30 @@ define page authordetail(author: Author)
   				column{	output(author.image)	}
   				column{ 
 	  				header{output(author.name)}	
-	  				par{ output(life)}
+	  				
+	  				if (author.deathDate != null)
+					{
+						if (author.birthDate == null)
+						{
+							par{ output("Unknown - " + author.deathDate)}
+						}
+						else
+						{
+							par{ output(author.birthDate + " - " + author.deathDate)}
+						}
+					} 
+					else
+					{
+						if (author.birthDate == null)
+						{
+							par {output ("biography is not available")}
+						}
+						else
+						{
+							par{ output(author.birthDate + " - present")}
+						}
+					}
+	  				
 	  				par {output(author.description)}
 	  				if (author.bookList.length == 0)
 	  				{
@@ -62,7 +57,7 @@ define page authordetail(author: Author)
 	  				}
 	  				else
 	  				{
-	  					par {navigate(root()){"Available books from this author"}}
+	  					par {navigate(bookListByAuthor(author)){"Available books from this author"}}
 	  				}
   				}
   			}	
