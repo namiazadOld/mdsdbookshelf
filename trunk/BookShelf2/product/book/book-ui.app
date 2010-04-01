@@ -8,10 +8,11 @@ imports product/order/order-ui
 
 access control rules
   rule page createbook() { isAdministrator() }
-   rule page editBook(book: Book) { isAdministrator() }
+  rule page editBook(book: Book) { isAdministrator() }
   rule page bookList( genre: Genre) {!isAdministrator()}
   rule page searchResult (searchString : String) {true}
   rule page testPage( book: Book) {true}
+  rule page bookListByAuthor(author : Author) {true}
  
 section book management
 
@@ -173,6 +174,18 @@ define page book(book: Book){
 		for(book :Book in genre.bookList) {
 			bookDetail(book) 
 			
+		}
+	}
+  }
+  
+  define page bookListByAuthor(author : Author)
+  {
+  	main()
+	define body()
+	{
+		for(book :Book in author.bookList)
+		{
+			bookDetail(book) 
 		}
 	}
   }
