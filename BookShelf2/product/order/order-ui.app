@@ -7,7 +7,9 @@ access control rules
   rule page viewOrderHistory(){isCustomer()|| isAdministrator()}
   rule page payment(order: Order){ isCustomer()}
   rule page viewInProgressOrder(order: Order){isCustomer() || isAdministrator() }
- 
+  rule page newSpecialOffer() {isAdministrator()}
+  rule page editSpecialOffer(specialOffer: SpecialOffer) {isAdministrator()}
+   
  section order item management
 
   define deleteItemAction(order: Order , item: OrderItem){
@@ -116,7 +118,7 @@ define page viewInProgressOrder(order: Order){
 								//"Not enough available.")
 								column{ output( item.book.hardCopyAvailableCount)}
 								column{	output(	item.book.price)}
-								column{	input(	item.type)[notnull:=true]}
+								column{	input(	item.orderType)[notnull:=true]}
 								column{
 								submitlink action{
 							          ord.orderItems.remove(item);
@@ -239,11 +241,62 @@ define page viewInProgressOrder(order: Order){
  define page newSpecialOffer(){
 	main
 	define body(){
-		var specialOffer : SpecialOffer
+		var specialOffer : SpecialOffer := SpecialOffer{}
 		init{
 			
 		}
+		form{
+			header{"New Special Offer"}
+			par{label("Name") {input(specialOffer.name)}}
+			par{label("Description") {input(specialOffer.description)}}
+			par{label("Published?") {input(specialOffer.published)}}
+			par{label("Expiration Date") {input(specialOffer.expirationDate)}}
+			par{label("Total Price") {input(specialOffer.totalPrice)}}
+			
+			par{output("You can add books to this special offer with search and browsing")}
+			submit create(specialOffer){"Create"}
+		}
+	}
+	action  create(offer : SpecialOffer){
+		offer.save();
+		message("Special offer created. You can search or browse bood to add to special offer");
+		return mypage();
+	}
+ }
+ 
+ define page editSpecialOffer(specialOffer: SpecialOffer){
+	main
+	define body(){
+		init{
+			
+		}
+		form{
+			header{"Edit Special Offer"}
+			par{label("Name") {input(specialOffer.name)}}
+			par{label("Description") {input(specialOffer.description)}}
+			par{label("Published?") {input(specialOffer.published)}}
+			par{label("Expiration Date") {input(specialOffer.expirationDate)}}
+			par{label("Total Price") {input(specialOffer.totalPrice)}}
+			par{output("You can add books to this special offer with search and browsing")}
+			
+			<table id="gradient-style">
+				row{
+					for(book: Book in specialOffer.items){
+							column{output(book.frontImage)}
+					}
+				}
+				
+				row{
+					for(book: Book in specialOffer.items){
+						column{output(book.title)}
+					}
+				}				
+			</table>
+			submit save(specialOffer){"Save"}
+		}
+	}
+	action  save(offer : SpecialOffer){
 		
-		
-	} 	
+	}
+ 	
  }

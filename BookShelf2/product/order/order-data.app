@@ -9,7 +9,7 @@ entity OrderItem{
 	count	::	Int
 	book	->	Book
 	order	->	Order
-	type	->  ShippingType (not null) := hardCopy
+	orderType	->  ShippingType := hardCopy
 	specialOffer	->	SpecialOffer  
 }
 
@@ -17,6 +17,12 @@ entity SpecialOffer{
 	name		:: String (name)
 	description	:: String
 	items		-> Set<Book>
+	published	:: Bool
+	expirationDate		:: Date
+	totalPrice	::	Float
+	function create(){
+		this.save();
+	}
 }
 
 entity Order{
