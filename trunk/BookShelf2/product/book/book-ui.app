@@ -13,6 +13,7 @@ access control rules
   rule page searchResult (searchString : String) {true}
   rule page testPage( book: Book) {true}
   rule page bookListByAuthor(author : Author) {true}
+  rule page book(book : Book, selectedTab : String){true}
  
 section book management
 
@@ -108,14 +109,202 @@ define page editbook(book: Book){
 	}
 
 }
-define page book(book: Book){
-	
+
+define page book(book: Book, selectedTab: String){
+	main()
+	define body()
+	{
+		section
+		{
+			table
+			{
+				row
+				{
+					header { output(book.title) }
+				}
+				row
+				{
+					column
+					{
+						output(book.frontImage)
+					}
+					column
+					{
+						output(book.backImage)
+					}
+				}
+				row
+				{
+					column
+					{
+						par{ output("ISBN: " + book.isbn13)  }
+					}
+				}
+				row
+				{
+					column
+					{
+						par{ output("Genre: " + book.genre.title)  }
+					}
+				}
+				row
+				{
+					column
+					{
+						par{ output("Summary: " + book.description)  }
+					}
+				}
+			}
+			<div id = "tabs2">
+							<ul>
+							case (selectedTab)
+							{
+								""
+								{
+									<li class="selected">navigate(book(book, "")){"Table of Content"}</li>
+									<li>navigate(book(book, "author")){"About Author"}</li>
+									<li>navigate(book(book, "availability")){"Availability"}</li>
+									<li>navigate(book(book, "publication")){"Publication"}</li>
+								}
+								"author"
+								{
+									<li>navigate(book(book, "")){"Table of Content"}</li>
+									<li class="selected">navigate(book(book, "author")){"About Author"}</li>
+									<li>navigate(book(book, "availability")){"Availability"}</li>
+									<li>navigate(book(book, "publication")){"Publication"}</li>
+								}
+								"availability"
+								{
+									<li>navigate(book(book, "")){"Table of Content"}</li>
+									<li>navigate(book(book, "author")){"About Author"}</li>
+									<li class="selected">navigate(book(book, "availability")){"Availability"}</li>
+									<li>navigate(book(book, "publication")){"Publication"}</li>
+								}
+								"publication"
+								{
+									<li>navigate(book(book, "")){"Table of Content"}</li>
+									<li>navigate(book(book, "author")){"About Author"}</li>
+									<li>navigate(book(book, "availability")){"Availability"}</li>
+									<li class="selected">navigate(book(book, "publication")){"Publication"}</li>
+								}
+							}
+								
+							</ul>
+						</div>		
+						case (selectedTab)
+							{
+								""
+								{
+									par
+									{
+										if (book.tableOfContent == "")
+										{
+											output("Unavailable")
+										}
+										else
+										{
+											output(book.tableOfContent)
+										}
+									}
+								}
+								"author"
+								{
+									<table id="gradient-style">
+									<thead>
+										<tr>
+											<th scope="col">output("Name")</th>
+											<th scope="col">output("Nationality")</th>
+									        </tr>
+									</thead>
+						
+									for (author: Author in book.authorList)
+									{
+										row
+										{
+											column{navigate(authordetail(author)){output(author.name)}}
+											column{output(author.nationality)}
+										}
+									}
+									
+									for(author: UnresolvedAuthor in book.unresolvedAuthorList)
+									{
+										row
+										{
+											column{output(author.fullName)}
+											column{output("Unavailable")}
+										}
+									}
+									</table>
+								}
+								"availability"
+								{
+									<table id="gradient-style">
+									<thead>
+										<tr>
+											<th scope="col">output("")</th>
+											<th scope="col">output("")</th>
+									        </tr>
+									</thead>
+						
+									row
+									{
+										column{output("Price")}
+										column{output(book.price)}
+									}
+									row
+									{
+										column{output("Available hard copies")}
+										column{output(book.hardCopyAvailableCount)}
+									}
+									row
+									{
+										column{output("Available ebooks")}
+										column{output(book.eBookAvailableCount)}
+									}
+									row
+									{
+										column{output("Discount")}
+										column{output(book.discount)}
+									}
+									</table>
+								}
+								"publication"
+								{
+									<table id="gradient-style">
+									<thead>
+										<tr>
+											<th scope="col">output("")</th>
+											<th scope="col">output("")</th>
+									        </tr>
+									</thead>
+						
+									row
+									{
+										column{output("Edition")}
+										column{output(book.edition)}
+									}
+									row
+									{
+										column{output("Publisher")}
+										column{output(book.publisher)}
+									}
+									row
+									{
+										column{output("Publication Date")}
+										column{output(book.publicationDate)}
+									}
+									</table>
+								}
+							}	
+		}
+	}	
 }
     
  
-   define bookDetail(book : Book){
-        var resolvedAuthorList : List<Author>
-        var count := 0
+define bookDetail(book : Book)
+{
+    var resolvedAuthorList : List<Author>
+    var count := 0
    	init 
    	{
  		if (book.authorList != null)
@@ -126,12 +315,11 @@ define page book(book: Book){
   	<div id="bookDetail">
   		table{
   			row{
-  				column{	output(book.frontImage)	}
+  				column {navigate(book(book, "")){output(book.frontImage)}}
   				column{ 
 					  				
-	  				header{output(book.title)}	
+	  				header{navigate(book(book, "")){output(book.title)}}	
 
-	  				//par[class :="className" ]{	output(book.title)	}
 	  				par{ output("Publisher: " + book.publisher )}
 	  				par
 	  				{
