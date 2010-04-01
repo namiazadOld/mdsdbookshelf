@@ -369,14 +369,11 @@ define page book(book: Book, selectedTab: String){
 						}
 					}
 					
-					if (!isAdministrator() && loggedIn())
+					if (book.mayPostComment())
 					{
 						par{ label("Post your comment "){ input(newComment) } }
 						submit postComment(newComment) {"Send" }
 					}
-					
-					
-					
 				}
 			}
 		}
@@ -386,11 +383,7 @@ define page book(book: Book, selectedTab: String){
 	
 	action postComment(input : String)
 	{
-		var comment:= Comment{};
-		comment.content := input;
-		comment.postDate := today();
-		comment.sender := principal();
-		comment.book := book;
+		book.postComment(input);
 		return book(book, "comment");
 	}
 }
