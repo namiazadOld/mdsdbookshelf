@@ -102,5 +102,20 @@ entity Book{
 	{
 		return isAdministrator();
 	}
+	
+	function postComment(content : String)
+	{
+		var comment:= Comment{};
+		comment.content := content;
+		comment.postDate := today();
+		comment.sender := principal();
+		comment.book := this;
+		comment.save();
+	}
+	
+	function mayPostComment(): Bool
+	{
+		return !isAdministrator() && loggedIn();
+	}
 }
 

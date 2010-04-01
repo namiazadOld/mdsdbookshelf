@@ -8,13 +8,7 @@ entity Comment{
 	postDate :: Date
 	sender -> User
 	book -> Book
-	function create(){
-		this.save();
-		sender := principal();
-		log("Comment Creation Log: " + this);
-		message ("Comment has been submitted successfully.");
-	}
-
+	
 	function mayRemove() : Bool
 	{
 		return isAdministrator() || principal() == this.sender;
@@ -25,4 +19,5 @@ entity Comment{
 		this.book := null;
 		this.delete();
 	}
+	
 }
