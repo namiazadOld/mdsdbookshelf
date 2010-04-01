@@ -27,7 +27,7 @@ entity Book{
 	
 	function mayRemove() : Bool
 	{
-		return false;
+		return orderItemList.length == 0;
 	}
 	
 	function allAuthorsString() : String{
@@ -80,6 +80,13 @@ entity Book{
 		}
 		
 		return count;
+	}
+	
+	function remove()
+	{
+		this.authorList.clear();
+		this.unresolvedAuthorList.clear();
+		this.delete();
 	}
 }
 

@@ -8,7 +8,7 @@ imports product/order/order-ui
 
 access control rules
   rule page createbook() { isAdministrator() }
-  rule page editBook(book: Book) { isAdministrator() }
+  rule page editbook(book: Book) { isAdministrator() }
   rule page bookList( genre: Genre) {!isAdministrator()}
   rule page searchResult (searchString : String) {true}
   rule page testPage( book: Book) {true}
@@ -64,7 +64,7 @@ define page createbook(){
 	}
   }
   
-define page editBook(book: Book){
+define page editbook(book: Book){
 	init{ if(!loggedIn()) { return root(); } }
 
 	var authors : String
@@ -159,6 +159,29 @@ define page book(book: Book){
 				 			}
 				 		}  
 	  				}
+	  				par{navigate(editbook(book)){"Edit"}}
+	  				par
+	  				{
+	  					if (isAdministrator())
+	  					{
+	  						submitlink action
+							{
+					          	if (book.mayRemove())
+					          	{
+					          		book.remove();
+					          		message("Book has been deleted successfully.");
+					          		return root();
+					          	}
+					          	else
+					          	{
+					          		message("Book has history in orders then it cannot be removed.");
+					          		return editbook(book);
+					          	}
+	
+							}{ output("Remove")} 
+	  					}
+	  					
+	  				}			
   				if(book.hardCopyAvailableCount > 0){
 					column{ 
 							submitlink action{
@@ -168,8 +191,7 @@ define page book(book: Book){
 					}
   				} else {
   					column{ par{output("Currently Not Available") }}
-  				}	  				
-	  				
+  				}	  
   				}
   			}	
   		}
