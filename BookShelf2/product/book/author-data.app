@@ -58,4 +58,21 @@ entity Author{
 		log("Author Creation Log: " + this);
 		message("Author record has been created successfully.");
 	}
+	
+	function resizeImage(x: Int, y: Int)
+	{
+		this.image.resize(x, y);
+	}
+	
+	function remove() : Bool
+	{
+		if (this.mayRemove())
+		{
+			this.delete();
+			message("Author has been deleted successfully.");
+			return true;
+		}
+		message("If there is no book wrote by this author, that author can be removed.");
+		return false;
+	}
 }

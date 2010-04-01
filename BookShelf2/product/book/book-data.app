@@ -82,11 +82,19 @@ entity Book{
 		return count;
 	}
 	
-	function remove()
+	function remove() : Bool
 	{
-		this.authorList.clear();
-		this.unresolvedAuthorList.clear();
-		this.delete();
+		if (this.mayRemove())
+		{
+			this.authorList.clear();
+			this.unresolvedAuthorList.clear();
+			this.delete();
+			message("Book has been deleted successfully.");
+			return true;
+		}
+		message("Book has history in orders then it cannot be removed.");
+		return false;
+		
 	}
 }
 
