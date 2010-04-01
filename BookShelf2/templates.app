@@ -127,6 +127,10 @@ define applicationmenu() {
     <li>navigate(createauthor()){ "Define New Author" }</li>
     <li>navigate(authorlist()){ "Edit Author" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
+    <li>navigate(specialOffers()) {"Special Offers"} </li>
+    <li>navigate(specialOffers()) {"Special Offers"} </li>
+    <li>navigate(viewOrderHistory()) {"My History"} </li>
+    
   </ul>
   
 }
@@ -136,11 +140,13 @@ define leftsidemenu(){
     <li>navigate(usermgmt()){ "User Management" }</li>
     <li>navigate(createbook()){ "Define New Book" }</li>
     <li>navigate(creategenre()){ "Define New Genre" }</li>
-    <li>navigate(genrelist()){ "Edit Genre" }</li>
+    <li>navigate(genrelist()){ "Genre List" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
     <li>navigate(authorlist()){ "Edit Author" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
-    genreMenu()
+    if(!isAdministrator()){
+    	genreMenu()
+    }
     
   </ul>
 }

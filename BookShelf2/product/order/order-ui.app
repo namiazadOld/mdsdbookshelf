@@ -4,12 +4,13 @@ imports product/order/order-data
 
 access control rules
   rule page newOrderItem(book : Book) { isCustomer() } 
-  rule page viewOrderHistory(){isCustomer()|| isAdministrator()}
+  rule page viewOrderHistory(){isCustomer()}
   rule page payment(order: Order){ isCustomer()}
   rule page viewInProgressOrder(order: Order){isCustomer() || isAdministrator() }
   rule page newSpecialOffer() {isAdministrator()}
   rule page editSpecialOffer(specialOffer: SpecialOffer) {isAdministrator()}
-   
+  rule page viewSpecialOffer(specialOffer: SpecialOffer){ true}
+  rule page specialOffers(){true}
  section order item management
 
   define deleteItemAction(order: Order , item: OrderItem){
@@ -20,7 +21,7 @@ access control rules
   	 })
   }
   
- function createOrderItem(orderedBook: Book): Order{
+ function createOrderItem(orderedBook: Book, specialOffer : SpecialOffer): Order{
 	var user: User;
  	var inprogressOrder : List<Order>;
  	var prevItems : List<OrderItem> ;
@@ -46,9 +47,15 @@ access control rules
  		
  		inprogressOrder :=[o | o : Order in inprogressOrder where o.status == statusInProgress ];
  		log("In progress order retrieved");
- 		item.count := 1; 
-		item.book := orderedBook ; 
-	
+ 		item.count := 1;
+ 		if(orderedBook != null){ 
+			item.book := orderedBook ; 
+		} 
+		if(specialOffer!= null){
+			item.specialOffer := specialOffer;
+			log("specialOffer is not Null");
+		}
+		
 	 	if (inprogressOrder.length == 0){
 	 		ord  := Order{ /*code := dtstr , */ customer := securityContext.principal , status := ostatus , 
 	 		date :=  dt };
@@ -60,11 +67,19 @@ access control rules
 	 	if(inprogressOrder.length == 1) {
 	 		
 	 		ord  :=	inprogressOrder[0];
-
-	 		var matchingOrderItems := [oi | oi:OrderItem in ord.orderItems.list() where oi.book == orderedBook];
-	 		if(matchingOrderItems.length == 0){
-	 			ord.orderItems.add(item);
+			if(orderedBook != null){
+		 		var matchingOrderItems := [oi | oi:OrderItem in ord.orderItems.list() where oi.book == orderedBook];
+		 		if(matchingOrderItems.length == 0){
+		 			ord.orderItems.add(item);
+		 		}
 	 		}
+
+			if(specialOffer!= null){
+		 		var matchingOrderItems := [oi | oi:OrderItem in ord.orderItems.list() where oi.specialOffer == specialOffer];
+		 		if(matchingOrderItems.length == 0){
+					ord.orderItems.add(item);
+				}
+			}
 	 		
 		 	log("In progress order was created before");
 	 		
@@ -79,9 +94,11 @@ define page viewInProgressOrder(order: Order){
 	main
 	define body(){
 		normalOrderItems(order)
+
 	}
 }
- define normalOrderItems(ord: Order){
+
+define normalOrderItems(ord: Order){
 			par{output("Order creation date: " + ord.date + "\n")}
 			
 			if(ord.orderItems.length==0){
@@ -97,19 +114,21 @@ define page viewInProgressOrder(order: Order){
 			
 			
 			form{
+			output("Normal Orders")
 			<table id="gradient-style">
 				<thead>
 					<tr>
 						<th scope="col">output("Title")</th>
 						<th scope="col">output("Count")</th>
-						<th scope="col">output("Available")</th>
+						<th scope="col">output("HardCopy Available")</th>
+						<th scope="col">output("Ebook Available")</th>
 						<th scope="col">output("Unit Price")</th>
 						<th scope="col">output("Type")</th>
 			        	<th scope="col">output("")</th>
 				        	//<th scope="col">Rating</th>
 				        </tr>
 				</thead>
-						for(item:OrderItem in ord.orderItems){
+						for(item:OrderItem in ord.orderItems where item.book != null){
 						
 							row{
 								column{output( item.book.title)}
@@ -117,13 +136,14 @@ define page viewInProgressOrder(order: Order){
 								//validate((item.count <= item.book.hardCopyAvailableCount), 
 								//"Not enough available.")
 								column{ output( item.book.hardCopyAvailableCount)}
+								column{ output( item.book.eBookAvailableCount)}
 								column{	output(	item.book.price)}
 								column{	input(	item.orderType)}
 								column{
 								submitlink action{
 							          ord.orderItems.remove(item);
 							          if(ord.orderItems.length ==0){
-							              return mypage();
+							              // return mypage();
 							          }} { image("/images/remove.gif") }
 								}
 							
@@ -131,39 +151,86 @@ define page viewInProgressOrder(order: Order){
 						}
 						
 			</table>
+
+			output("Special Offers")
+			<table id="gradient-style">
+				<thead>
+					<tr>
+						<th scope="col">output("Name")</th>
+						<th scope="col">output("Price")</th>
+						<th scope="col">output("")</th>
+
+			        </tr>
+			        				</thead>
+						for(item:OrderItem in ord.orderItems where item.specialOffer != null){
+						
+							row{
+								column{output( item.specialOffer.name)}
+								column{ output(item.specialOffer.totalPrice) } 
+								column{
+								submitlink action{
+							          ord.orderItems.remove(item);
+							          if(ord.orderItems.length ==0){
+							              // return mypage();
+							          }} { image("/images/remove.gif") }
+								}
+							
+							}
+						}
+						
+			</table>
+
+			
+			
 				submit checkout(ord) {"Check out" }
 			}
 	
 			 }		
 	
 		 action checkout(order: Order){
+		 	
+		 	for(item:OrderItem in order.orderItems where item.book!= null){
+		 		if(item.orderType== hardCopy){
+			 		validate(item.count <= item.book.hardCopyAvailableCount, "Not enough items left for: "+ item.book.title);
+		 		}
+		 		if(item.orderType== electronic){
+			 		validate(item.count <= item.book.eBookAvailableCount, "Not enough items left for: "+item.book.title);
+		 		}
+		 	}
+		 	
 		 	return payment(order);
 		 } 
  }
  define page payment(order: Order){
-	var totalPrice: Float :=0.0
+	var totalNormalPrice: Float :=0.0
+	var totalSpecialPrice: Float :=0.0
+	var total: Float :=0.0;
  	main
  	define body(){
 	init{
 		
-		for(item : OrderItem in order.orderItems){
+		for(item : OrderItem in order.orderItems where item.book != null){
 			
-			totalPrice := totalPrice + item.count.floatValue()* item.book.price; 
+			totalNormalPrice := totalNormalPrice + item.count.floatValue()* item.book.price; 
 		}
+		for(item : OrderItem in order.orderItems where item.specialOffer != null){
+			totalSpecialPrice := totalSpecialPrice + item.specialOffer.totalPrice;
+		}
+		total := totalSpecialPrice + totalNormalPrice;
 	}
  	output("Order to be checked out:")
-		
+	
 		form{
 		<table id="gradient-style">
 			<thead>
 				<tr>
-					<th scope="col">output("Title")</th>
+					<th scope="col">output("Book Title")</th>
 					<th scope="col">output("Count")</th>
 					<th scope="col">output("Unit Price")</th>
 			        	//<th scope="col">Rating</th>
 			        </tr>
 			</thead>
-					for(item:OrderItem in order.orderItems){
+					for(item:OrderItem in order.orderItems where item.book!= null){
 					
 						row{
 							column{output( item.book.title)}
@@ -178,19 +245,51 @@ define page viewInProgressOrder(order: Order){
 				<tr>
 					<th scope="col">output("")</th>
 					<th scope="col">output("")</th>
-					<th scope="col">output(totalPrice)</th>
+					<th scope="col">output(totalNormalPrice)</th>
 			        	//<th scope="col">Rating</th>
 			        </tr>
 			</tfoot>
 					
 		</table>
+
+		<table id="gradient-style">
+			<thead>
+				<tr>
+					<th scope="col">output("Special Offer Name")</th>
+					<th scope="col">output("Price")</th>
+			        	//<th scope="col">Rating</th>
+			        </tr>
+			</thead>
+					for(item:OrderItem in order.orderItems where item.specialOffer!= null){
+					
+						row{
+							column{output( item.specialOffer.name)}
+							column{ output(item.specialOffer.totalPrice) } 
+						
+						}
+					}
+			<tfoot>
+				<tr>
+					<th scope="col">output("")</th>
+					<th scope="col">output(totalSpecialPrice)</th>
+			        	//<th scope="col">Rating</th>
+			        </tr>
+			</tfoot>
+					
+		</table>
+		par{output("Total price to be paid is " + total)}
 		submit pay(order){"Pay"}
  	}
 
  }
 	 action pay(order: Order){
 		for(item: OrderItem in order.orderItems){
-	 		item.book.hardCopyAvailableCount := item.book.hardCopyAvailableCount - item.count; 
+			if(item.orderType == hardCopy){
+	 			item.book.hardCopyAvailableCount := item.book.hardCopyAvailableCount - item.count;
+	 		} 
+			if(item.orderType == electronic){
+	 			item.book.eBookAvailableCount := item.book.eBookAvailableCount - item.count;
+	 		} 
 	 	}
 	 	order.status := statusSubmitted;
 	 	order.date := now();
@@ -299,4 +398,84 @@ define page viewInProgressOrder(order: Order){
 		
 	}
  	
+ }
+ 
+ define page viewSpecialOffer(specialOffer: SpecialOffer){
+ 		main
+ 		define body(){
+			header{"View Special Offer"}
+			<table id="gradient-style">
+				row{
+					column{output("Name")}
+					column{output(specialOffer.name)}
+				}
+				row{
+					column{output("Description")}
+					column{output(specialOffer.description)}
+				}				
+				row{
+					column{output("Due Date")}
+					column{output(specialOffer.expirationDate)}
+				}				
+				row{
+					column{output("Total Price")}
+					column{output(specialOffer.totalPrice)}
+				}				
+				
+			</table>			
+	
+			<table id="gradient-style">
+				row{
+					for(book: Book in specialOffer.items){
+							column{output(book.frontImage)}
+					}
+				}
+				
+				row{
+					for(book: Book in specialOffer.items){
+						column{output(book.title)}
+					}
+				}				
+			</table>
+			form{
+				submitlink action{
+				var order: Order := createOrderItem(null as Book, specialOffer);
+				return viewInProgressOrder(order);
+		          } { image("/images/addcart.png") }
+	         }
+		
+ 	}
+ }
+ 
+ define page specialOffers(){
+	main
+	define body(){
+		for(specialOffer: SpecialOffer  where specialOffer.published==true){
+			form{
+				<table id="gradient-style">
+					row{
+						column{navigate(viewSpecialOffer(specialOffer)){ output(specialOffer.name) }}
+					}
+					row{
+						for(book: Book in specialOffer.items){
+								column{output(book.frontImage)}
+								
+						}
+					}
+					
+					row{
+						for(book: Book in specialOffer.items){
+							column{output(book.title)}
+						}
+					}
+				</table>
+			}
+			submitlink action{
+			var order: Order := createOrderItem(null as Book, specialOffer);
+			return viewInProgressOrder(order);
+	          } { image("/images/addcart.png") }
+			
+		}
+	}
+	
  }
