@@ -159,6 +159,16 @@ define page book(book: Book){
 				 			}
 				 		}  
 	  				}
+  				if(book.hardCopyAvailableCount > 0){
+					column{ 
+							submitlink action{
+								var order: Order := createOrderItem(book);
+								return viewInProgressOrder(order);
+						          } { image("/images/addcart.png") }
+					}
+  				} else {
+  					column{ par{output("Currently Not Available") }}
+  				}	  				
 	  				
   				}
   			}	
