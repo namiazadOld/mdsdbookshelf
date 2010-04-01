@@ -104,6 +104,7 @@ define page editauthor(author: Author)
   				</div>
   				action("Save", action
   								{ 
+  									author.updateIndexes();
   									return authordetail(author); 
   								}
   					 	)
