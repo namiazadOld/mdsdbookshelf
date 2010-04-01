@@ -9,7 +9,7 @@ entity OrderItem{
 	count	::	Int
 	book	->	Book
 	order	->	Order
-	orderType	->  ShippingType := hardCopy
+	orderType	->  ShippingType
 	specialOffer	->	SpecialOffer  
 }
 

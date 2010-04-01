@@ -118,7 +118,7 @@ define page viewInProgressOrder(order: Order){
 								//"Not enough available.")
 								column{ output( item.book.hardCopyAvailableCount)}
 								column{	output(	item.book.price)}
-								column{	input(	item.orderType)[notnull:=true]}
+								column{	input(	item.orderType)}
 								column{
 								submitlink action{
 							          ord.orderItems.remove(item);
