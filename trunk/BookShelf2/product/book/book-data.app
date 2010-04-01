@@ -27,7 +27,7 @@ entity Book{
 	
 	function mayRemove() : Bool
 	{
-		
+		return false;
 	}
 	
 	function allAuthorsString() : String{
