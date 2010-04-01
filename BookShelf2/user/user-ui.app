@@ -151,7 +151,7 @@ section account management
   
   define viewNewOrders(ord:Order , list : List<Order>){
          header{"Latest Order in Progress"}
-		inProgressOrderView(ord)
+		normalOrderItems(ord)
   }
   define accountData(user : User) {
     section{
