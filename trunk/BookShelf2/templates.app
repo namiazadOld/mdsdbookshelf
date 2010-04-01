@@ -92,6 +92,7 @@ define applicationmenu() {
     <li>navigate(creategenre()){ "Define New Genre" }</li>
     <li>navigate(genrelist()){ "Edit Genre" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
+    <li>navigate(authorlist()){ "Edit Author" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
   </ul>
   
@@ -104,6 +105,7 @@ define leftsidemenu(){
     <li>navigate(creategenre()){ "Define New Genre" }</li>
     <li>navigate(genrelist()){ "Edit Genre" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
+    <li>navigate(authorlist()){ "Edit Author" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
     genreMenu()
     
