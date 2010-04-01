@@ -11,6 +11,7 @@ imports user/user-ui
 imports product/book/book-ui
 imports product/book/genre-ui
 imports product/book/author-ui
+imports product/book/comment-ui
 
 access control rules
  
