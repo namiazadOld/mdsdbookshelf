@@ -50,6 +50,10 @@ define page authordetail(author: Author)
 						}
 					}
 	  				
+	  				if (author.nationality != "")
+	  				{
+	  					par {output("Nationality: " + author.nationality)}
+	  				}
 	  				par {output(author.description)}
 	  				if (author.bookList.length == 0)
 	  				{
@@ -240,18 +244,18 @@ define page resolvedauthorselection(inputSearch : String)
 				count := count + 1;
 				index := id;
 			}
-			
-			if (count == 0)
+		}
+		
+		if (count == 0)
 			{
 				message("One author should be selected!");
 				return resolvedauthorselection(inputSearch);
 			}
 			
-			if (count > 1)
-			{
-				message("Only one author should be selected!");
-				return resolvedauthorselection(inputSearch);
-			}
+		if (count > 1)
+		{
+			message("Only one author should be selected!");
+			return resolvedauthorselection(inputSearch);
 		}
 		
 		return unresolvedauthorsearch(authors.get(index));
