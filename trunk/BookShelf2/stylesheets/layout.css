@@ -163,7 +163,7 @@ p {
 /*
 #tabs a span {	
 */
-#tabs a {
+#tabs  a  {
 	float:left;
 	display:block;
 	background:url("../images/right.png") no-repeat right top;
@@ -171,6 +171,62 @@ p {
 	margin-right:4px;
 	color:#FFF;
 	}
+	
+#tabs2 {
+	float:left;
+	width:100%;
+	font-size:93%;
+	line-height:normal;
+	border-bottom:1px solid #666;
+	margin-bottom:1em; /*margin between menu and rest of page*/
+	overflow:hidden;
+	}
+
+#tabs2 ul {
+	margin:0;
+	padding:10px 10px 0 0px;
+	list-style:none;
+	
+	}
+
+#tabs2 li {
+	display:inline;
+	margin:0;
+	padding:0;
+	}
+
+#tabs2 a span {
+	float:left;
+	background:url("../images/left.png") no-repeat left top;
+	margin:0;
+	padding:0 0 0 6px;
+	text-decoration:none;
+	}
+/*
+#tabs a span {	
+*/
+#tabs2  li  {
+	float:left;
+	display:block;
+	background:url("../images/right.png") no-repeat right top;
+	padding:6px 15px 4px 6px;
+	margin-right:4px;
+	color:#FFF;
+	}
+	
+	
+#tabs2 .selected {	
+	
+	color:#FFF;
+	background:url("../images/rightselected.png") no-repeat right top;
+	
+}
+#tabs2 a {	
+	
+	color:#FFF;
+
+	
+}
 
 /* Commented Backslash Hack hides rule from IE5-Mac \*/
 #tabs a span {float:none;}
@@ -202,6 +258,7 @@ padding: 1px;
 #bookDetail p{
 padding: 5px;
 }
+
 
 #authorDetail{
 font-family: arial,helvetica,sans-serif; font-size: 12px;
@@ -380,3 +437,4 @@ padding: 5px;
 	background: #d0dafd url('table-images/gradhover.png') repeat-x;
 	color: #339;
 }
+
