@@ -43,6 +43,12 @@ entity Author{
 	nationality :: String
 	description :: String	
 	bookList -> Set<Book>
+	
+	function mayRemove()
+	{
+		return this.bookList.length == 0;
+	}
+	
 	function create(){
 		this.save();
 		if (this.image != null)

@@ -60,7 +60,7 @@ define page authorlistforedit(inputSearch : String)
 					{
 						submitlink action
 							{
-					          	if (author.bookList.length == 0)
+					          	if (author.mayRemove())
 					          	{
 					          		author.delete();
 					          		message("Author has been deleted successfully.");
@@ -183,7 +183,7 @@ define page authordetail(author: Author)
 	  					{
 	  						submitlink action
 							{
-					          	if (author.bookList.length == 0)
+					          	if (author.mayRemove() == 0)
 					          	{
 					          		author.delete();
 					          		message("Author has been deleted successfully.");
