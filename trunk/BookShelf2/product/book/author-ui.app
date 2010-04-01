@@ -183,7 +183,7 @@ define page authordetail(author: Author)
 	  					{
 	  						submitlink action
 							{
-					          	if (author.mayRemove() == 0)
+					          	if (author.mayRemove())
 					          	{
 					          		author.delete();
 					          		message("Author has been deleted successfully.");
