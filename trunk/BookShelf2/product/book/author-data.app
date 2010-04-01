@@ -75,4 +75,23 @@ entity Author{
 		message("If there is no book wrote by this author, that author can be removed.");
 		return false;
 	}
+	
+	function updateIndexes()
+	{
+		if (this.bookList.length != 0)
+		{
+			for (book : Book in this.bookList)
+			{
+				if (book.dummyCount == null)
+				{
+					book.dummyCount := 0;
+				}
+				else
+				{
+					book.dummyCount := book.dummyCount + 1;
+				}
+				
+			}
+		}
+	}
 }
