@@ -1,4 +1,5 @@
 module product/book/book-data
+imports product/order/order-data
 
 
 
@@ -20,8 +21,14 @@ entity Book{
 	genre 	-> Genre
 	authorList -> Set<Author> (inverse = Author.bookList)
 	unresolvedAuthorList -> List<UnresolvedAuthor> (inverse = UnresolvedAuthor.book)
+	orderItemList -> List<OrderItem>(inverse = OrderItem.book)
 	
 	authors :: String (searchable) := allAuthorsString()
+	
+	function mayRemove() : Bool
+	{
+		
+	}
 	
 	function allAuthorsString() : String{
 		var result := "";
