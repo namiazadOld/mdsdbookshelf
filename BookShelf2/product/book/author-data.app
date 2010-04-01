@@ -44,7 +44,7 @@ entity Author{
 	description :: String	
 	bookList -> Set<Book>
 	
-	function mayRemove()
+	function mayRemove() : Bool
 	{
 		return this.bookList.length == 0;
 	}
