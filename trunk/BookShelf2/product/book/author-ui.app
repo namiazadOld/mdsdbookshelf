@@ -60,17 +60,8 @@ define page authorlistforedit(inputSearch : String)
 					{
 						submitlink action
 							{
-					          	if (author.mayRemove())
-					          	{
-					          		author.delete();
-					          		message("Author has been deleted successfully.");
-					          	}
-					          	else
-					          	{
-					          		message("If there is no book wrote by this author, that author can be removed.");
-					          	}
-					          	return authorlistforedit(inputSearch);
-	
+								author.remove();
+								return authorlistforedit(inputSearch);
 							}{ image("/images/remove.gif")} 
 					}
 					
@@ -113,12 +104,6 @@ define page editauthor(author: Author)
   				</div>
   				action("Save", action
   								{ 
-  									
-  									author.save();
-  									// if (author.image != null)
-									// {
-										// author.image.resize(200, 128);
-									// } 
   									return authordetail(author); 
   								}
   					 	)
@@ -183,18 +168,14 @@ define page authordetail(author: Author)
 	  					{
 	  						submitlink action
 							{
-					          	if (author.mayRemove())
-					          	{
-					          		author.delete();
-					          		message("Author has been deleted successfully.");
-					          		return root();
-					          	}
-					          	else
-					          	{
-					          		message("If there is no book wrote by this author, that author can be removed.");
-					          		return authordetail(author);
-					          	}
-	
+								if (author.remove())
+								{
+									return root();
+								}
+								else
+								{
+									return authordetail(author);
+								}
 							}{ output("Remove")} 
 	  					}
 	  					
@@ -310,7 +291,6 @@ define page unresolvedauthorselection(inputSearch : String, author: Author)
 			{
 				if (inputs.get(authors.indexOf(unResAuthor)).content == true)
 				{
-					// message(unResAuthor.fullName);
 					var book : Book := unResAuthor.book;
 					book.unresolvedAuthorList.remove(unResAuthor);
 					book.authorList.add(author);

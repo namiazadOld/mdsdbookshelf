@@ -166,17 +166,14 @@ define page book(book: Book){
 	  					{
 	  						submitlink action
 							{
-					          	if (book.mayRemove())
-					          	{
-					          		book.remove();
-					          		message("Book has been deleted successfully.");
-					          		return root();
-					          	}
-					          	else
-					          	{
-					          		message("Book has history in orders then it cannot be removed.");
-					          		return editbook(book);
-					          	}
+								if (book.remove())
+								{
+									return root();
+								}
+								else
+								{
+									return editbook(book);
+								}
 	
 							}{ output("Remove")} 
 	  					}
