@@ -1,6 +1,6 @@
 module product/book/book-data
 imports product/order/order-data
-
+imports product/book/comment-data
 
 
 entity Book{
@@ -23,12 +23,13 @@ entity Book{
 	authorList -> Set<Author> (inverse = Author.bookList)
 	unresolvedAuthorList -> List<UnresolvedAuthor> (inverse = UnresolvedAuthor.book)
 	orderItemList -> List<OrderItem>(inverse = OrderItem.book)
+	commentList -> List<Comment>(inverse = Comment.book)
 	
 	authors :: String (searchable) := allAuthorsString()
 	
 	function mayRemove() : Bool
 	{
-		return orderItemList.length == 0;
+		return isAdministrator() && orderItemList.length == 0;
 	}
 	
 	function allAuthorsString() : String{
@@ -95,7 +96,11 @@ entity Book{
 		}
 		message("Book has history in orders then it cannot be removed.");
 		return false;
-		
+	}
+	
+	function mayEdit() : Bool
+	{
+		return isAdministrator();
 	}
 }
 

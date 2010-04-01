@@ -5,6 +5,7 @@ imports product/book/book-data
 imports product/book/author-data
 imports product/book/author-ui
 imports product/order/order-ui
+imports product/book/comment-ui
 
 access control rules
   rule page createbook() { isAdministrator() }
@@ -111,11 +112,14 @@ define page editbook(book: Book){
 }
 
 define page book(book: Book, selectedTab: String){
+	var newComment : String
 	main()
 	define body()
 	{
 		section
 		{
+			form
+			{
 			table
 			{
 				row
@@ -137,167 +141,258 @@ define page book(book: Book, selectedTab: String){
 				{
 					column
 					{
-						par{ output("ISBN: " + book.isbn13)  }
+						par{<strong> output("ISBN: " )</strong> output( book.isbn13 )}
 					}
 				}
 				row
 				{
 					column
 					{
-						par{ output("Genre: " + book.genre.title)  }
+						par{<strong> output("Genre: " )</strong> output( book.genre.title )}
 					}
 				}
 				row
 				{
 					column
 					{
-						par{ output("Summary: " + book.description)  }
+						par{<strong> output("Summary: " )</strong> output( book.description )}
+					}
+				}
+				
+				
+				if (book.mayEdit() || book.mayRemove())
+				{
+					row
+					{
+						column
+						{
+							if (book.mayEdit())
+							{
+								submitlink action
+								{
+									return editbook(book);
+								}{ output("Edit ")} 
+							}
+							
+							if (book.mayRemove())
+							{
+								submitlink action
+								{
+									book.remove();
+									return root();
+								}{ output("Remove")} 
+							}
+						}
 					}
 				}
 			}
+			
 			<div id = "tabs2">
-							<ul>
-							case (selectedTab)
+			<ul>
+			case (selectedTab)
+			{
+				""
+				{
+					<li class="selected">navigate(book(book, "")){"Table of Content"}</li>
+					<li>navigate(book(book, "author")){"About Author"}</li>
+					<li>navigate(book(book, "availability")){"Availability"}</li>
+					<li>navigate(book(book, "publication")){"Publication"}</li>
+					<li>navigate(book(book, "comment")){"Comments"}</li>
+				}
+				"author"
+				{
+					<li>navigate(book(book, "")){"Table of Content"}</li>
+					<li class="selected">navigate(book(book, "author")){"About Author"}</li>
+					<li>navigate(book(book, "availability")){"Availability"}</li>
+					<li>navigate(book(book, "publication")){"Publication"}</li>
+					<li>navigate(book(book, "comment")){"Comments"}</li>
+				}
+				"availability"
+				{
+					<li>navigate(book(book, "")){"Table of Content"}</li>
+					<li>navigate(book(book, "author")){"About Author"}</li>
+					<li class="selected">navigate(book(book, "availability")){"Availability"}</li>
+					<li>navigate(book(book, "publication")){"Publication"}</li>
+					<li>navigate(book(book, "comment")){"Comments"}</li>
+				}
+				"publication"
+				{
+					<li>navigate(book(book, "")){"Table of Content"}</li>
+					<li>navigate(book(book, "author")){"About Author"}</li>
+					<li>navigate(book(book, "availability")){"Availability"}</li>
+					<li class="selected">navigate(book(book, "publication")){"Publication"}</li>
+					<li>navigate(book(book, "comment")){"Comments"}</li>
+				}
+				"comment"
+				{
+					<li>navigate(book(book, "")){"Table of Content"}</li>
+					<li>navigate(book(book, "author")){"About Author"}</li>
+					<li>navigate(book(book, "availability")){"Availability"}</li>
+					<li>navigate(book(book, "publication")){"Publication"}</li>
+					<li class="selected">navigate(book(book, "comment")){"Comments"}</li>
+				}
+			}
+				
+			</ul>
+		</div>		
+		case (selectedTab)
+			{
+				""
+				{
+					par
+					{
+						if (book.tableOfContent == "")
+						{
+							output("Unavailable")
+						}
+						else
+						{
+							output(book.tableOfContent)
+						}
+					}
+				}
+				"author"
+				{
+					<table id="gradient-style">
+					<thead>
+						<tr>
+							<th scope="col">output("Name")</th>
+							<th scope="col">output("Nationality")</th>
+					        </tr>
+					</thead>
+		
+					for (author: Author in book.authorList)
+					{
+						row
+						{
+							column{navigate(authordetail(author)){output(author.name)}}
+							column{output(author.nationality)}
+						}
+					}
+					
+					for(author: UnresolvedAuthor in book.unresolvedAuthorList)
+					{
+						row
+						{
+							column{output(author.fullName)}
+							column{output("Unavailable")}
+						}
+					}
+					</table>
+				}
+				"availability"
+				{
+					<table id="gradient-style">
+					<thead>
+						<tr>
+							<th scope="col">output("")</th>
+							<th scope="col">output("")</th>
+					        </tr>
+					</thead>
+		
+					row
+					{
+						column{output("Price")}
+						column{output(book.price)}
+					}
+					row
+					{
+						column{output("Available hard copies")}
+						column{output(book.hardCopyAvailableCount)}
+					}
+					row
+					{
+						column{output("Available ebooks")}
+						column{output(book.eBookAvailableCount)}
+					}
+					row
+					{
+						column{output("Discount")}
+						column{output(book.discount)}
+					}
+					</table>
+				}
+				"publication"
+				{
+					<table id="gradient-style">
+					<thead>
+						<tr>
+							<th scope="col">output("")</th>
+							<th scope="col">output("")</th>
+					        </tr>
+					</thead>
+		
+					row
+					{
+						column{output("Edition")}
+						column{output(book.edition)}
+					}
+					row
+					{
+						column{output("Publisher")}
+						column{output(book.publisher)}
+					}
+					row
+					{
+						column{output("Publication Date")}
+						column{output(book.publicationDate)}
+					}
+					</table>
+				}
+				"comment"
+				{
+					
+					table
+					{
+						for (comment : Comment in book.commentList)
+						{
+							row
 							{
-								""
+								column
 								{
-									<li class="selected">navigate(book(book, "")){"Table of Content"}</li>
-									<li>navigate(book(book, "author")){"About Author"}</li>
-									<li>navigate(book(book, "availability")){"Availability"}</li>
-									<li>navigate(book(book, "publication")){"Publication"}</li>
+									commentdetail(comment)
 								}
-								"author"
+								
+								column
 								{
-									<li>navigate(book(book, "")){"Table of Content"}</li>
-									<li class="selected">navigate(book(book, "author")){"About Author"}</li>
-									<li>navigate(book(book, "availability")){"Availability"}</li>
-									<li>navigate(book(book, "publication")){"Publication"}</li>
-								}
-								"availability"
-								{
-									<li>navigate(book(book, "")){"Table of Content"}</li>
-									<li>navigate(book(book, "author")){"About Author"}</li>
-									<li class="selected">navigate(book(book, "availability")){"Availability"}</li>
-									<li>navigate(book(book, "publication")){"Publication"}</li>
-								}
-								"publication"
-								{
-									<li>navigate(book(book, "")){"Table of Content"}</li>
-									<li>navigate(book(book, "author")){"About Author"}</li>
-									<li>navigate(book(book, "availability")){"Availability"}</li>
-									<li class="selected">navigate(book(book, "publication")){"Publication"}</li>
+									if (comment.mayRemove())
+									{
+										submitlink action
+										{
+											comment.remove();
+											return book(book, "comment");
+										}{ output("Remove")} 
+									}
 								}
 							}
-								
-							</ul>
-						</div>		
-						case (selectedTab)
-							{
-								""
-								{
-									par
-									{
-										if (book.tableOfContent == "")
-										{
-											output("Unavailable")
-										}
-										else
-										{
-											output(book.tableOfContent)
-										}
-									}
-								}
-								"author"
-								{
-									<table id="gradient-style">
-									<thead>
-										<tr>
-											<th scope="col">output("Name")</th>
-											<th scope="col">output("Nationality")</th>
-									        </tr>
-									</thead>
-						
-									for (author: Author in book.authorList)
-									{
-										row
-										{
-											column{navigate(authordetail(author)){output(author.name)}}
-											column{output(author.nationality)}
-										}
-									}
-									
-									for(author: UnresolvedAuthor in book.unresolvedAuthorList)
-									{
-										row
-										{
-											column{output(author.fullName)}
-											column{output("Unavailable")}
-										}
-									}
-									</table>
-								}
-								"availability"
-								{
-									<table id="gradient-style">
-									<thead>
-										<tr>
-											<th scope="col">output("")</th>
-											<th scope="col">output("")</th>
-									        </tr>
-									</thead>
-						
-									row
-									{
-										column{output("Price")}
-										column{output(book.price)}
-									}
-									row
-									{
-										column{output("Available hard copies")}
-										column{output(book.hardCopyAvailableCount)}
-									}
-									row
-									{
-										column{output("Available ebooks")}
-										column{output(book.eBookAvailableCount)}
-									}
-									row
-									{
-										column{output("Discount")}
-										column{output(book.discount)}
-									}
-									</table>
-								}
-								"publication"
-								{
-									<table id="gradient-style">
-									<thead>
-										<tr>
-											<th scope="col">output("")</th>
-											<th scope="col">output("")</th>
-									        </tr>
-									</thead>
-						
-									row
-									{
-										column{output("Edition")}
-										column{output(book.edition)}
-									}
-									row
-									{
-										column{output("Publisher")}
-										column{output(book.publisher)}
-									}
-									row
-									{
-										column{output("Publication Date")}
-										column{output(book.publicationDate)}
-									}
-									</table>
-								}
-							}	
+							
+						}
+					}
+					
+					if (!isAdministrator() && loggedIn())
+					{
+						par{ label("Post your comment "){ input(newComment) } }
+						submit postComment(newComment) {"Send" }
+					}
+					
+					
+					
+				}
+			}
 		}
-	}	
+				
+	}
+  }	
+	
+	action postComment(input : String)
+	{
+		var comment:= Comment{};
+		comment.content := input;
+		comment.postDate := today();
+		comment.sender := principal();
+		comment.book := book;
+		return book(book, "comment");
+	}
 }
     
  
@@ -350,7 +445,7 @@ define bookDetail(book : Book)
 	  				par{navigate(editbook(book)){"Edit"}}
 	  				par
 	  				{
-	  					if (isAdministrator())
+	  					if (book.mayRemove())
 	  					{
 	  						submitlink action
 							{
