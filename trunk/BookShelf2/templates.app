@@ -5,6 +5,9 @@ imports user/user-data
 imports user/admin-ui
 imports product/book/book-ui
 imports product/book/genre-ui
+imports product/book/testimonial-data
+imports product/book/testimonial-ui
+
 
 access control rules
 	rule action signout() { isAdministrator() }
@@ -42,6 +45,7 @@ define main() {
 		 </div>
 		 <div id="rightcolumn">
 		 	search()
+		 	testimonial()
 		 </div>
 		 <div id="footer">
 		       		footer()
@@ -73,6 +77,35 @@ define search(){
 		par{ label("Search: "){ input(inputSearch) } }
 		action("Go!", action{ 
 		return searchResult(inputSearch); })
+	}
+}
+
+define testimonial()
+{
+	var testi : Testimonial := getTheMostUpToDateTestimonial();
+	
+	form{
+		
+		par{ label("Testimonial: ")
+		{ 
+				if (testi != null)
+				{
+					output(testi.content + " By ") 
+					<strong>
+						output(testi.sender.name)
+					</strong>
+				}
+		}
+	}
+		
+		par
+		{
+			submitlink action
+			{
+				return testimoniallist();
+			}{ output("See more...")} 
+		}
+		
 	}
 }
 
