@@ -8,6 +8,7 @@ entity User {
     password  :: Secret
     firstname :: String 
     lastname  :: String
+    name :: String := firstname + " " + lastname 
     gender    -> Gender(not null)
     birthdate :: Date
     isactive  :: Bool
