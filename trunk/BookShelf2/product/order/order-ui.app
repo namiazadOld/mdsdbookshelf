@@ -6,19 +6,7 @@ access control rules
   rule page newOrderItem(book : Book) { isCustomer() } 
   rule page viewOrderHistory(){isCustomer()|| isAdministrator()}
   rule page payment(order: Order){ isCustomer()}
-section	order management
-
-define page newOrder(){
-//	header("Order Items")
-	
-}
-
-define page editOrder(order : Order){
-}
-
-define page viewOrder(order : Order){
-}
-
+  rule page viewInProgressOrder(order: Order){isCustomer() || isAdministrator() }
  
  section order item management
 
@@ -30,21 +18,17 @@ define page viewOrder(order : Order){
   	 })
   }
   
-   
- define page newOrderItem(orderedBook: Book){ 
+ function createOrderItem(orderedBook: Book): Order{
+	var user: User;
+ 	var inprogressOrder : List<Order>;
+ 	var prevItems : List<OrderItem> ;
+ 	var dt	: DateTime;
+ 	var dtstr : String;
+ 	var ostatus: OrderStatus;	
+ 	var ord : Order;
+ 	var item : OrderItem;
  	
- 	main
- 	define body(){
-	var user: User
- 	var inprogressOrder : List<Order>
- 	var prevItems : List<OrderItem> 
- 	var dt	: DateTime
- 	var dtstr : String
- 	var ostatus: OrderStatus	
- 	var ord : Order
- 	var item : OrderItem
  	
- 	init{
  	log("Starting init");
  	
 		 	
@@ -85,75 +69,74 @@ define page viewOrder(order : Order){
 	 		
 	 	}
 	 	 
- 	}
-		//orderView(ord)
-		
-	 	inProgressOrderView(ord)
-
-//		message("New item added to your order list successfully.")
- 	}
- 	
- 	
-
- 
+ 	return ord;
  }
-
- 	define inProgressOrderView(ord: Order){
-		par{output("Order creation date: " + ord.date + "\n")}
-		
-		if(ord.orderItems.length==0){
+ 
+ 
+define page viewInProgressOrder(order: Order){
+	main
+	define body(){
+		normalOrderItems(order)
+	}
+}
+ define normalOrderItems(ord: Order){
+			par{output("Order creation date: " + ord.date + "\n")}
+			
+			if(ord.orderItems.length==0){
+				<table id="gradient-style">
+					<thead>
+						<tr>
+							<th scope="col">output("Currently there is no item in your list.")</th>
+					        </tr>
+					</thead>
+				</table>
+			
+			} else{
+			
+			
+			form{
 			<table id="gradient-style">
 				<thead>
 					<tr>
-						<th scope="col">output("Currently there is no item in your list.")</th>
+						<th scope="col">output("Title")</th>
+						<th scope="col">output("Count")</th>
+						<th scope="col">output("Available")</th>
+						<th scope="col">output("Unit Price")</th>
+						<th scope="col">output("Type")</th>
+			        	<th scope="col">output("")</th>
+				        	//<th scope="col">Rating</th>
 				        </tr>
 				</thead>
-			</table>
-		
-		} else{
-		
-		
-		form{
-		<table id="gradient-style">
-			<thead>
-				<tr>
-					<th scope="col">output("Title")</th>
-					<th scope="col">output("Count")</th>
-					<th scope="col">output("Available")</th>
-					<th scope="col">output("Unit Price")</th>
-		        	<th scope="col">output("")</th>
-			        	//<th scope="col">Rating</th>
-			        </tr>
-			</thead>
-					for(item:OrderItem in ord.orderItems){
-					
-						row{
-							column{output( item.book.title)}
-							column{ input(item.count) } 
-							//validate((item.count <= item.book.hardCopyAvailableCount), 
-							//"Not enough available.")
-							column{ output( item.book.hardCopyAvailableCount)}
-							column{	output(	item.book.price)}
-							column{
-							submitlink action{
-						          ord.orderItems.remove(item);
-						          if(ord.orderItems.length ==0){
-						              return mypage();
-						          }} { image("/images/remove.gif") }
-							}
+						for(item:OrderItem in ord.orderItems){
 						
+							row{
+								column{output( item.book.title)}
+								column{ input(item.count) } 
+								//validate((item.count <= item.book.hardCopyAvailableCount), 
+								//"Not enough available.")
+								column{ output( item.book.hardCopyAvailableCount)}
+								column{	output(	item.book.price)}
+								column{	input(	item.type)[notnull:=true]}
+								column{
+								submitlink action{
+							          ord.orderItems.remove(item);
+							          if(ord.orderItems.length ==0){
+							              return mypage();
+							          }} { image("/images/remove.gif") }
+								}
+							
+							}
 						}
-					}
-					
-		</table>
-			submit checkout(ord) {"Check out" }
-		}
-
-		 }		
-
- action checkout(order: Order){
- 	return payment(order);
- } 
+						
+			</table>
+				submit checkout(ord) {"Check out" }
+			}
+	
+			 }		
+	
+		 action checkout(order: Order){
+		 	return payment(order);
+		 } 
  }
  define page payment(order: Order){
 	var totalPrice: Float :=0.0
@@ -224,7 +207,7 @@ define page viewOrder(order : Order){
 		user := securityContext.principal;
 	 	submittedOrders := from Order as o where o.customer = ~user;
 		
-	//	submittedOrders :=[o | o : Order in submittedOrders where o.status == statusSubmitted ];
+		submittedOrders :=[o | o : Order in submittedOrders where o.status == statusSubmitted ];
 	}
 			header{output(user.firstname + " order history") }
 			<table id="gradient-style">
@@ -249,4 +232,18 @@ define page viewOrder(order : Order){
 			</table>
 	}
  
+ }
+ 
+ section special offer
+ 
+ define page newSpecialOffer(){
+	main
+	define body(){
+		var specialOffer : SpecialOffer
+		init{
+			
+		}
+		
+		
+	} 	
  }
