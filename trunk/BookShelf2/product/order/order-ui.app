@@ -123,6 +123,7 @@ define normalOrderItems(ord: Order){
 						<th scope="col">output("HardCopy Available")</th>
 						<th scope="col">output("Ebook Available")</th>
 						<th scope="col">output("Unit Price")</th>
+						<th scope="col">output("Discount")</th>
 						<th scope="col">output("Type")</th>
 			        	<th scope="col">output("")</th>
 				        	//<th scope="col">Rating</th>
@@ -138,6 +139,7 @@ define normalOrderItems(ord: Order){
 								column{ output( item.book.hardCopyAvailableCount)}
 								column{ output( item.book.eBookAvailableCount)}
 								column{	output(	item.book.price)}
+								column{	output(	item.book.discount)}
 								column{	input(	item.orderType)}
 								column{
 								submitlink action{
@@ -205,18 +207,20 @@ define normalOrderItems(ord: Order){
 	var totalNormalPrice: Float :=0.0
 	var totalSpecialPrice: Float :=0.0
 	var total: Float :=0.0;
+	var discount: Float :=0.0;
  	main
  	define body(){
 	init{
 		
 		for(item : OrderItem in order.orderItems where item.book != null){
 			
-			totalNormalPrice := totalNormalPrice + item.count.floatValue()* item.book.price; 
+			totalNormalPrice := totalNormalPrice + item.count.floatValue()* item.book.price;
+			discount	:= discount + item.book.discount;
 		}
 		for(item : OrderItem in order.orderItems where item.specialOffer != null){
 			totalSpecialPrice := totalSpecialPrice + item.specialOffer.totalPrice;
 		}
-		total := totalSpecialPrice + totalNormalPrice;
+		total := totalSpecialPrice + totalNormalPrice - discount;
 	}
  	output("Order to be checked out:")
 	
@@ -227,6 +231,7 @@ define normalOrderItems(ord: Order){
 					<th scope="col">output("Book Title")</th>
 					<th scope="col">output("Count")</th>
 					<th scope="col">output("Unit Price")</th>
+					<th scope="col">output("Discount")</th>
 			        	//<th scope="col">Rating</th>
 			        </tr>
 			</thead>
@@ -238,6 +243,7 @@ define normalOrderItems(ord: Order){
 							//validate((item.count <= item.book.hardCopyAvailableCount), 
 							//"Not enough available.")
 							column{	output(	item.book.price)}
+							column{	output( item.book.discount)}
 						
 						}
 					}
@@ -246,6 +252,7 @@ define normalOrderItems(ord: Order){
 					<th scope="col">output("")</th>
 					<th scope="col">output("")</th>
 					<th scope="col">output(totalNormalPrice)</th>
+					<th scope="col">output(discount)</th>
 			        	//<th scope="col">Rating</th>
 			        </tr>
 			</tfoot>
@@ -308,7 +315,7 @@ define normalOrderItems(ord: Order){
 		user := securityContext.principal;
 	 	submittedOrders := from Order as o where o.customer = ~user;
 		
-		submittedOrders :=[o | o : Order in submittedOrders where o.status == statusSubmitted ];
+		submittedOrders :=[o | o : Order in submittedOrders where o.status == statusSubmitted order by o.date desc];
 	}
 			header{output(user.firstname + " order history") }
 			<table id="gradient-style">
@@ -349,7 +356,9 @@ define normalOrderItems(ord: Order){
 			par{label("Name") {input(specialOffer.name)}}
 			par{label("Description") {input(specialOffer.description)}}
 			par{label("Published?") {input(specialOffer.published)}}
-			par{label("Expiration Date") {input(specialOffer.expirationDate)}}
+			par{label("Expiration Date") {input(specialOffer.expirationDate){
+				validate(specialOffer.expirationDate.after(now()),	"Please enter a valid date.")}
+			}}
 			par{label("Total Price") {input(specialOffer.totalPrice)}}
 			
 			par{output("You can add books to this special offer with search and browsing")}
@@ -359,7 +368,7 @@ define normalOrderItems(ord: Order){
 	action  create(offer : SpecialOffer){
 		offer.save();
 		message("Special offer created. You can search or browse bood to add to special offer");
-		return mypage();
+		return specialOffers();
 	}
  }
  
@@ -395,7 +404,7 @@ define normalOrderItems(ord: Order){
 		}
 	}
 	action  save(offer : SpecialOffer){
-		
+		message("Special offer saved successfully.");
 	}
  	
  }
@@ -450,12 +459,20 @@ define normalOrderItems(ord: Order){
  define page specialOffers(){
 	main
 	define body(){
+		
 		for(specialOffer: SpecialOffer  where specialOffer.published==true){
 			form{
 				<table id="gradient-style">
-					row{
-						column{navigate(viewSpecialOffer(specialOffer)){ output(specialOffer.name) }}
-					}
+					<thead>
+						<tr>
+							if(!isAdministrator()){
+								<th colspan=specialOffer.items.length scope="col">navigate(viewSpecialOffer(specialOffer)){ output(specialOffer.name) }</th>
+							} else{
+								<th colspan=specialOffer.items.length scope="col">navigate(editSpecialOffer(specialOffer)){ output(specialOffer.name) }</th>
+							}
+				        </tr>
+					</thead>
+		
 					row{
 						for(book: Book in specialOffer.items){
 								column{output(book.frontImage)}
