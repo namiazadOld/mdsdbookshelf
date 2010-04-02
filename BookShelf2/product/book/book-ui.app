@@ -455,16 +455,18 @@ define bookDetail(book : Book)
 	  					}
 	  					
 	  				}			
-  				if(book.hardCopyAvailableCount > 0){
-					column{ 
-							submitlink action{
-								var order: Order := createOrderItem(book, null as SpecialOffer);
-								return viewInProgressOrder(order);
-						          } { image("/images/addcart.png") }
+  				if(book.hardCopyAvailableCount > 0 ||  book.eBookAvailableCount >0 ){
+  					if(isCustomer()){
+						column{ 
+								submitlink action{
+									var order: Order := createOrderItem(book, null as SpecialOffer);
+									return viewInProgressOrder(order);
+							          } { image("/images/addcart.png") }
+						}
 					}
   				} else {
   					column{ par{output("Currently Not Available") }}
-  				}	  
+  				}
   				}
   			}	
   		}
@@ -543,7 +545,7 @@ define printBookList(books: List<Book>){
 				<hr/>
 				for(id:Int from 0 to books.length)
 				{
-			  		<table>
+			  		<table id="bookDetail" width="100%">
 			  			row{
 			  				if(isAdministrator()){
 			  					column{	input(boolInputs.get(id).content)}
