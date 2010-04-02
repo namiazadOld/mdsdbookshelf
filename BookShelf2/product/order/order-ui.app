@@ -322,6 +322,7 @@ define normalOrderItems(ord: Order){
 			<thead>
 				<tr>
 					<th scope="col">output("Title")</th>
+					<th scope="col">output("Type")</th>
 					<th scope="col">output("Order Count")</th>
 					<th scope="col">output("Date")</th>
 			        </tr>
@@ -330,10 +331,19 @@ define normalOrderItems(ord: Order){
 			for(order :Order in submittedOrders){
 				for(item: OrderItem in order.orderItems){
 					row{
-						column{output(item.book.title)}
-						column{output(item.count)}
+						if(item.book!= null){
+							column{navigate(book(item.book,"")){ output(item.book.title) }}
+							column{output("Normal")}
+							column{output(item.count)}
+						} 
+						if(item.specialOffer!= null){
+							column{navigate(viewSpecialOffer(item.specialOffer)){ output(item.specialOffer.name) }}
+							column{output("Special Offer")}
+							column{output(1)}
+						}
 						column{output(order.date)}
 					}
+					
 				}
 			}
 			
