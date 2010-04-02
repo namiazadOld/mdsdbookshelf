@@ -121,13 +121,6 @@ define applicationmenu() {
     <li>navigate(signup()){ "Singup" }</li>
     <li>navigate(mypage()){ "My Page" }</li>
     <li>navigate(usermgmt()){ "User Management" }</li>
-    <li>navigate(createbook()){ "Define New Book" }</li>
-    <li>navigate(creategenre()){ "Define New Genre" }</li>
-    <li>navigate(genrelist()){ "Edit Genre" }</li>
-    <li>navigate(createauthor()){ "Define New Author" }</li>
-    <li>navigate(authorlist()){ "Edit Author" }</li>
-    <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
-    <li>navigate(specialOffers()) {"Special Offers"} </li>
     <li>navigate(specialOffers()) {"Special Offers"} </li>
     <li>navigate(viewOrderHistory()) {"My History"} </li>
   </ul>
@@ -142,7 +135,7 @@ define leftsidemenu(){
     <li>navigate(newSpecialOffer()) {"New Special Offer"} </li>
     <li>navigate(genrelist()){ "Genre List" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
-    <li>navigate(authorlist()){ "Edit Author" }</li>
+    <li>navigate(authorlist()){ "Author List" }</li>
     <li>navigate(resolvedauthorsearch()) {"Resolving Authors"} </li>
     if(!isAdministrator()){
     	genreMenu()
