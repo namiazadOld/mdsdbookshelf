@@ -127,6 +127,8 @@ border-width:1px;
  float: left;
 }
 
+
+
 #rightcolumn input[type="text"]{
 
 		width: 130px;
@@ -289,6 +291,8 @@ padding: 5px;
 }
 
 
+
+
 #authorEdit{
 font-family: arial,helvetica,sans-serif; font-size: 12px;
 background-color:#d9e1ea;
@@ -449,4 +453,10 @@ padding: 5px;
 	background: #d0dafd url('table-images/gradhover.png') repeat-x;
 	color: #339;
 }
+#smallInput input[type="text"]{
+
+		width: 320px;
+		
+	}
+
 
