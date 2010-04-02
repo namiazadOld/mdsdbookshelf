@@ -11,6 +11,8 @@ body {
  font-family: Verdana, Arial, Helvetica, sans-serif;
  font-size: 13px;
  padding: 10px;
+ background-image: url('http://www.eosdev.com/Backgrounds/Back_BankersGranite/eosbankersgranite2c.gif');
+
 }
 
 
@@ -69,6 +71,9 @@ p {
 #wrapper { 
  margin: 0 auto;
  width: 1000px;
+ background-color: white;
+ border-style:solid;
+border-width:1px;
 }
 
 #content { 
@@ -79,6 +84,7 @@ p {
  width: 700px;
  display: inline;
  padding: 5px 5px;
+
 }
 
 #header {
@@ -108,7 +114,7 @@ p {
 #leftcolumn { 
  color: #333;
  background: #EBE3CD;
- height: 350px;
+ height: 100%;
  width: 150px;
  float: left;
 }

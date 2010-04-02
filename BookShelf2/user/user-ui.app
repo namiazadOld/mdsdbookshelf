@@ -48,7 +48,7 @@ section login
     init{ if(loggedIn()) { return root(); } }
     var username : String
     var password : Secret
-    action doit(){ signin(username, password); }
+    action doit(){ signin(username, password); if(isCustomer()){return mypage();}}
     header{"Sign In"}
     form{
       par{ label("Username"){ input(username) } }

@@ -130,7 +130,6 @@ define applicationmenu() {
     <li>navigate(specialOffers()) {"Special Offers"} </li>
     <li>navigate(specialOffers()) {"Special Offers"} </li>
     <li>navigate(viewOrderHistory()) {"My History"} </li>
-    
   </ul>
   
 }
@@ -140,6 +139,7 @@ define leftsidemenu(){
     <li>navigate(usermgmt()){ "User Management" }</li>
     <li>navigate(createbook()){ "Define New Book" }</li>
     <li>navigate(creategenre()){ "Define New Genre" }</li>
+    <li>navigate(newSpecialOffer()) {"New Special Offer"} </li>
     <li>navigate(genrelist()){ "Genre List" }</li>
     <li>navigate(createauthor()){ "Define New Author" }</li>
     <li>navigate(authorlist()){ "Edit Author" }</li>
