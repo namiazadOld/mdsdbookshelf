@@ -44,11 +44,11 @@ define page usermgmt(){
 					<th scope="col">output("First Name")</th>
 					<th scope="col">output("Last Name")</th>
 					<th scope="col">output("")</th>
-					<th scope="col">output("")</th>
+
 			        </tr>
 			</thead>
 
-			for(user :User ){
+			for(user :User where user in customerGroup.members){
 				row{
 					column{navigate(profile(user)){ output(user.username) }}
 					column{output(user.firstname)}
