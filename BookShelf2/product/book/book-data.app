@@ -53,8 +53,31 @@ entity Book{
 		return result;
 	}
 	
-	function create(){
-		this.save();
+	function unresolvedAuthorsString() : String
+	{
+		var result := "";
+		var count : Int := 0;
+		
+		if (this.unresolvedAuthorList != null)
+		{
+			for (author: UnresolvedAuthor in this.unresolvedAuthorList)
+			{
+				count := count + 1;
+				result := result + author.fullName;
+				if (count < this.unresolvedAuthorList.length)
+				{
+					result := result + ", ";
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	function createBook(){
+				
+		this.save();		
+		
 		if (this.frontImage != null)
 		{
 			this.frontImage.resize(200,128);
@@ -63,6 +86,8 @@ entity Book{
 		{
 			this.backImage.resize(200,128);	
 		}	
+		
+					
 		log("Book Creation Log: " + this);
 		message("Book has been created successfully.");
 	}
@@ -89,6 +114,12 @@ entity Book{
 		if (this.mayRemove())
 		{
 			this.authorList.clear();
+			
+			for (unresolvedAuthor : UnresolvedAuthor in this.unresolvedAuthorList)
+			{
+				unresolvedAuthor.delete();
+			}
+			
 			this.unresolvedAuthorList.clear();
 			this.delete();
 			message("Book has been deleted successfully.");
@@ -117,5 +148,7 @@ entity Book{
 	{
 		return !isAdministrator() && loggedIn();
 	}
+	
+
 }
 

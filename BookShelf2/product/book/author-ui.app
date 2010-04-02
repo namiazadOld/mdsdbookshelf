@@ -35,13 +35,9 @@ define page authorlist()
 	}	
 }
 
-define page authorlistforedit(inputSearch : String)
+define authorlisttable(authors : List<Author>, hasAction : Bool, inputSearch: String)
 {
-	var authors : List<Author> := searchAuthor(inputSearch)
-	init{ if(!loggedIn()) { goto root(); } }
-	main()
-	define body(){
-		<table id="gradient-style">
+	<table id="gradient-style">
 			<thead>
 				<tr>
 					<th scope="col">output("Name")</th>
@@ -55,19 +51,33 @@ define page authorlistforedit(inputSearch : String)
 				row{
 					column{output(author.name)}
 					column{output(author.nationality)}
-					column{navigate(editauthor(author)){image("/images/edit.png")}}
-					column 
+					
+					if (hasAction)
 					{
-						submitlink action
-							{
-								author.remove();
-								return authorlistforedit(inputSearch);
-							}{ image("/images/remove.gif")} 
+						column{navigate(editauthor(author)){image("/images/edit.png")}}
+						column 
+						{
+							submitlink action
+								{
+									author.remove();
+									return authorlistforedit(inputSearch);
+								}{ image("/images/remove.gif")} 
+						}
 					}
+					
 					
 				}
 			}
-			</table>
+	</table>
+}
+
+define page authorlistforedit(inputSearch : String)
+{
+	var authors : List<Author> := searchAuthor(inputSearch)
+	init{ if(!loggedIn()) { goto root(); } }
+	main()
+	define body(){
+		authorlisttable(authors, true, inputSearch)
 	}
 }
 
@@ -81,27 +91,24 @@ define page editauthor(author: Author)
 			header { "Edit Author" }
 			form
 			{
-				<div id="authorDetail">
-		  		table
-		  		{
-		  			column
-		  			{
-		  				row {output (author.image)}
-		  				row {label("New Image"){input(author.image)}}
-		  			}	
-		  			column
-		  			{
-		  				row {label("Firstname "){input(author.firstName)}}
-		  				row {label("Lastname "){input(author.lastName)}}
-		  				row {label("Email "){input(author.email)}}
-		  				row {label("Gender "){input(author.gender)}}
-		  				row {label("Birth date "){input(author.birthDate)}}
-		  				row {label("Death date "){input(author.deathDate)}}
-		  				row {label("Nationality "){input(author.nationality)}}
-		  				row {label("Description "){input(author.description)}}
-		  			}
-		  		}  		
-  				</div>
+				output (author.image)
+				label("New Image"){input(author.image)}
+				par
+				{
+					submitlink action
+					{
+			          	author.image := null;
+						return editauthor(author);
+					}{ output("Remove Image")} 
+				}
+				label("Firstname "){input(author.firstName)}
+				label("Lastname "){input(author.lastName)}
+				label("Email "){input(author.email)}
+				label("Gender "){input(author.gender)}
+				label("Birth date "){input(author.birthDate)}
+				label("Death date "){input(author.deathDate)}
+				label("Nationality "){input(author.nationality)}
+				label("Description "){input(author.description)}
   				action("Save", action
   								{ 
   									author.updateIndexes();
@@ -260,7 +267,7 @@ define page unresolvedauthorselection(inputSearch : String, author: Author)
 							}
 							column
 							{
-								output(authors.get(id).name)
+								output(authors.get(id).name + "(" + authors.get(id).book.title + ")")
 							}
 						}
 					}
