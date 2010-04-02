@@ -15,6 +15,7 @@ access control rules
   rule page testPage( book: Book) {true}
   rule page bookListByAuthor(author : Author) {true}
   rule page book(book : Book, selectedTab : String){true}
+  rule page editbookauthors(book: Book) {isAdministrator()}
  
 section book management
 
@@ -22,12 +23,11 @@ section book management
 
 define page createbook(){
 	init{ if(!loggedIn()) { return root(); } }
-	var book:= Book{}
-	var authors : String
-	var cs := UnresolvedAuthor {};
-	var parts : List<String>;
+	var book:= Book{};
+	var authors : String;
 	main
 	define body(){	
+	
 		section{
 			header { "Define New Book" }
 			form{
@@ -46,69 +46,299 @@ define page createbook(){
 				par{ label("Discount "){ input(book.discount) } }
 				par{ label("Description "){ input(book.description) } }
 				par{ label("Genre "){ input(book.genre) } }
-				action("Create", action{ 
-					book.create();
-					parts := authors.split(",");
-					book.unresolvedAuthorList := List<UnresolvedAuthor>();
-					
-					for (p: String in parts)
-					{
-						cs := UnresolvedAuthor {};
-						cs.fullName := p;
-						book.unresolvedAuthorList.add(cs);
-					}
-					
-					return createbook(); 
-					}) 
+				submit create(book, authors) {"Create" }
+				
 				
 			}
 		}
+	}
+	action create(book : Book, authors : String)
+	{
+		var parts : List<String>;
+		var cs := UnresolvedAuthor {};
+		
+		
+		//WEBDSL BUG: argument cannot be passed to a function of book!!!! this manipulation should be done in book methods.
+		book.createBook();
+		
+		parts := authors.split(",");
+		book.unresolvedAuthorList := List<UnresolvedAuthor>();
+		
+		for (p: String in parts)
+		{
+			
+			cs := UnresolvedAuthor {};
+			cs.fullName := p;
+			book.unresolvedAuthorList.add(cs);
+		}
+		
+		return createbook(); 
 	}
   }
   
-define page editbook(book: Book){
-	init{ if(!loggedIn()) { return root(); } }
-
-	var authors : String
-	var cs := UnresolvedAuthor {};
-	var parts : List<String>;
-	main
-	define body(){	
-		section{
-			header { "Define New Book" }
+define page editbookauthors(book: Book)
+{
+	var unresolvedAuthors : String := book.unresolvedAuthorsString();
+	var boolInputs : List<CustomBool>;
+	var copyAuthors : List<Author> := book.authorList.list();
+	init
+	{		
+		for(id:Int from 0 to book.authorList.length)
+		{
+			var entry:= CustomBool{};
+			entry.content := false;
+			boolInputs.add(entry);
+		}
+	}
+	main()
+	define body()
+	{
+		section
+		{
 			form{
-				par{ label("Title "){ input(book.title) } }
-				par {label ("Authors ") {input(authors)}}
-				par{ label("ISBN "){ input(book.isbn13) } }
-				par{ label("Front Image "){ input(book.frontImage) } }
-				par{ label("Back Image "){ input(book.backImage) } }
-				par{ label("Table of Content "){ input(book.tableOfContent) } }
-				par{ label("Publisher "){ input(book.publisher) } }
-				par{ label("Publication Date "){ input(book.publicationDate) } }
-				par{ label("Edition "){ input(book.edition) } }
-				par{ label("Hard Copy Available Count "){ input(book.hardCopyAvailableCount) } }
-				par{ label("EBook Coppy Available Count "){ input(book.eBookAvailableCount) } }
-				par{ label("Discount "){ input(book.discount) } }
-				par{ label("Description "){ input(book.description) } }
-				par{ label("Genre "){ input(book.genre) } }
-				action("Save", action{ 
-					parts := authors.split(",");
-					book.unresolvedAuthorList := List<UnresolvedAuthor>();
-					
-					for (p: String in parts)
-					{
-						cs := UnresolvedAuthor {};
-						cs.fullName := p;
-						book.unresolvedAuthorList.add(cs);
-					}
-					
-					return bookList(book.genre); 
-					}) 
+				par{ label("Unresolved authors "){ input(unresolvedAuthors) } }
+				
+				if (book.authorList != null && book.authorList.length != 0)
+				{
+					<table id="gradient-style">
+						<thead>
+							<tr>
+								<th scope="col">output("Select for delete")</th>
+								<th scope="col">output("Name")</th>
+								<th scope="col">output("Nationality")</th>
+						        </tr>
+						</thead>
+			
+						for(id:Int from 0 to copyAuthors.length)
+						{
+							row{
+								
+								column
+								{
+									input(boolInputs.get(id).content)
+								}
+								column{output(copyAuthors.get(id).name)}
+								column{output(copyAuthors.get(id).nationality)}
+							}
+						}
+					</table>
+										
+				}
+				
+				submit saveChanges(book, unresolvedAuthors, boolInputs) {"Save" }
 				
 			}
 		}
+	
 	}
+	
+	action saveChanges(book : Book, unresolvedAuthors: String, boolInputs : List<CustomBool>)
+	{
+		var parts : List<String>;
+		var cs := UnresolvedAuthor {};
+		var counter : Int := 0;
+		var authorList : List<Author>;
+		
+		parts := unresolvedAuthors.split(",");
+		
+		if (book.unresolvedAuthorList == null)
+		{
+			book.unresolvedAuthorList := List<UnresolvedAuthor>();
+		}
+		else
+		{
+			for (unresolvedAuthor : UnresolvedAuthor in book.unresolvedAuthorList)
+			{
+				unresolvedAuthor.delete();
+			}
+			book.unresolvedAuthorList.clear();
+		}
+		
+		for (p: String in parts)
+		{
+			cs := UnresolvedAuthor {};
+			cs.fullName := p;
+			book.unresolvedAuthorList.add(cs);
+		}
+		
+		if (book.authorList != null && book.authorList.length != 0)
+		{
+			authorList := book.authorList.list();
+			
+			for(id:Int from 0 to boolInputs.length)
+			{
+				if (boolInputs.get(id).content)
+				{
+					authorList.removeAt(id - counter);
+					counter := counter + 1;
+				}
+			}
+			
+			book.authorList.clear();
+			
+			for (author : Author in authorList)
+			{
+				book.authorList.add(author);
+			}
+		}
+		
+		
+		return editbook(book);
+	}
+}
 
+define page editbook(book : Book)
+{
+	main()
+	define body()
+	{
+		section
+		{
+			header { "Edit Book" }
+			form
+			{
+				<table id="smallInput">
+					row
+					{
+						output (book.title)
+					}
+					row
+					{
+						column
+						{
+							output (book.frontImage)
+						}
+						column
+						{
+							output (book.backImage)
+						}
+					}
+					row
+					{
+						column
+						{
+							label("New Front Image"){input(book.frontImage)}
+							par
+							{
+								submitlink action
+								{
+						          	book.frontImage := null;
+									return editbook(book);
+								}{ output("Remove Image")} 
+							}
+							
+						}
+						column
+						{
+							label("New Back Image"){input(book.backImage)}
+							par
+							{
+								submitlink action
+								{
+						          	book.backImage := null;
+									return editbook(book);
+								}{ output("Remove Image")} 
+							}
+						}
+					}
+					row
+					{
+						column
+						{
+							submitlink action
+							{
+								return editbookauthors(book);
+							}{ output("Edit authors")} 
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Price"){input(book.price)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("ISBN"){input(book.isbn13)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Table of Content"){input(book.tableOfContent)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Publisher"){input(book.publisher)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Publication Date"){input(book.publicationDate)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Edition"){input(book.edition)}
+						}	
+					}
+					row
+					{
+						column
+						{
+							label("Hard Copy Available Count"){input(book.hardCopyAvailableCount)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("EBook Copy Available Count"){input(book.eBookAvailableCount)}
+						}	
+					}
+					row
+					{
+						column
+						{
+							label("Discount"){input(book.discount)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Description"){input(book.description)}
+						}
+					}
+					row
+					{
+						column
+						{
+							label("Genre"){input(book.genre)}
+						}
+					}
+					
+				</table>
+				action("Save", action
+  								{ 
+  									return book(book, ""); 
+  								}
+  					 	)
+			}
+				
+		}
+	}
 }
 
 define page book(book: Book, selectedTab: String){
